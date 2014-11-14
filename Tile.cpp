@@ -30,7 +30,8 @@ ostream& Tile::operator<<(ostream& os){
 // ----------------------------------------------------------------------------
 
 bool RestaurantTile::action(Player& player){
-
+    player.setFood(10);
+    return true;
 }
 
 Tile* RestaurantTile::clone(){
@@ -43,7 +44,18 @@ Tile* RestaurantTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool SpiceMerchantTile::action(Player& player){
-
+    int space = player.getCart() - player.totalItems();
+    if(player.getGold() >= 2 && space > 0){
+        player.setGold(player.getGold() - 2);
+        if(space < 3){
+            player.setSpice(cart);
+        }
+        else{
+            player.setSpice(player.getSpice() + 3);
+        }
+        return true;
+    }
+    return false;
 }
 
 Tile* SpiceMerchantTile::clone(){
@@ -56,7 +68,18 @@ Tile* SpiceMerchantTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool FabricManufacturesTile::action(Player& player){
-
+    int space = player.getCart() - player.totalItems();
+    if(player.getGold() >= 2 && space > 0){
+        player.setGold(player.getGold() - 2);
+        if(space < 3){
+            player.setFabric(cart);
+        }
+        else{
+            player.setFabric(player.getFabric() + 3);
+        }
+        return true;
+    }
+    return false;
 }
 
 Tile* FabricManufacturesTile::clone(){
@@ -69,7 +92,18 @@ Tile* FabricManufacturesTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool JewelerTile::action(Player& player){
-
+    int space = player.getCart() - player.totalItems();
+    if(player.getGold() >= 2 && space > 0){
+        player.setGold(player.getGold() - 2);
+        if(space < 3){
+            player.setJewel(cart);
+        }
+        else{
+            player.setJewel(player.getJewel() + 3);
+        }
+        return true;
+    }
+    return false;
 }
 
 Tile* JewelerTile::clone(){
@@ -78,11 +112,16 @@ Tile* JewelerTile::clone(){
 
 
 // ----------------------------------------------------------------------------
-// Car Manufacturer
+// Cart Manufacturer
 // ----------------------------------------------------------------------------
 
-bool CarManufacturerTile::action(Player& player){
-
+bool CartManufacturerTile::action(Player& player){
+    if(player.getGold() >= 7){
+        player.setGold(player.getGold() - 7);
+        player.setCart(player.getCart() + 3);
+        return true;
+    }
+    return false;
 }
 
 Tile* CarManufacturerTile::clone(){
@@ -95,7 +134,14 @@ Tile* CarManufacturerTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool SmallMarketTile::action(Player& player){
-
+    if(player.getFabric() > 0 && player.getJewel() > 0 && player.getFabric() > 0){
+        player.setFabric(player.getFabric() - 1);
+        player.setJewel(player.getJewel() - 1);
+        player.setFabric(player.getFabric() -1);
+        player.setGold(player.getGold() + 8;
+        return true;
+    }
+    return false;
 }
 
 Tile* SmallMarketTile::clone(){
@@ -107,7 +153,10 @@ Tile* SmallMarketTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool SpiceMarketTile::action(Player& player){
-
+    if(player.getSpice() >= 3){
+        player.setSpice(player.getSpice() - 3);
+        player.setGold(player.getGold() + 6);
+    }
 }
 
 Tile* SpiceMarketTile::clone(){
@@ -120,7 +169,10 @@ Tile* SpiceMarketTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool JelewryMarketTile::action(Player& player){
-
+    if(player.getJewel() >= 3){
+        player.setJewel(player.getJewel() - 3);
+        player.setGold(player.getGold() + 6);
+    }
 }
 
 Tile* JelewryMarketTile::clone(){
@@ -133,7 +185,10 @@ Tile* JelewryMarketTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool FabricMarketTile::action(Player& player){
-
+    if(player.getFabric() >= 3){
+        player.setFabric(player.getFabric() - 3);
+        player.setGold(player.getGold() + 6);
+    }
 }
 
 Tile* FabricMarketTile::clone(){
