@@ -1,6 +1,8 @@
 *.vcxproj*
 *.obj
 
+*.swp
+
 # Precompiled Headers
 *.gch
 *.pch
