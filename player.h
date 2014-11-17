@@ -11,18 +11,26 @@ public:
 	bool pay(Player& player);
 	void eat();
     int totalItems();
-    inline int getGold(){return gold;}
-    inline void setGold(int num){gold = num;}
-    inline int getRuby(){return ruby;}
-    inline void setRuby(int num){ruby = num;}
-    inline int getSpice(){return spice;}
-    inline void setSpice(int num){spice = num;}
-    inline int getFabric(){return fabric;}
-    inline void setFabric(int num){fabric = num;}
-    inline int getJewel(){return jewel;}
-    inline void setJewel(int num){jewel = num;}
-    inline int getCart(){return cart;}
-    inline void setCart(int num){cart = num;}
-    inline int getFood(){return food};
-    inline void setFood(int num){food = num};
+
+	// Accessor methods for goods, gold, cart room and food
+	int getGold(){ return gold; }
+	void setGold(int num){ gold = num; }
+
+	int getRuby(){ return ruby; }
+	void setRuby(int num){ ruby = num; }
+
+	int getSpice(){ return spice; }
+	void setSpice(int num){ spice = num; }
+
+	int getFabric(){ return fabric; }
+	void setFabric(int num){ fabric = num; }
+
+	int getJewel(){ return jewel; }
+	void setJewel(int num){ jewel = num; }
+
+	int getCart(){ return cart; }
+	void setCart(int num){ cart = num; }
+
+	int getFood(){ return food; }
+	void setFood(int num){ food = num; }
 };
