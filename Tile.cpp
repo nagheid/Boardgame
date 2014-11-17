@@ -4,9 +4,9 @@
 
 using namespace std;
 
-
 // ----------------------------------------------------------------------------
 // Desert (Default Tile)
+// No action is possible on this tile. This is the base class behaviour
 // ----------------------------------------------------------------------------
 
 bool Tile::operator==(const Tile &t){
@@ -28,6 +28,8 @@ ostream& Tile::operator<<(ostream& os){
 
 // ----------------------------------------------------------------------------
 // Restaurant
+// The number of food items of a player is replenished and will be set to 10.
+// This is the initial position of all players.
 // ----------------------------------------------------------------------------
 
 bool RestaurantTile::action(Player& player){
@@ -42,6 +44,8 @@ Tile* RestaurantTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Spice Merchant
+// For 2 pieces of gold, a player can purchase 3 sacks of spices (less if the
+// player does not have a capacity in his / her cart).
 // ----------------------------------------------------------------------------
 
 bool SpiceMerchantTile::action(Player& player){
@@ -66,6 +70,8 @@ Tile* SpiceMerchantTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Fabric Manufactures
+// For 2 pieces of gold, the player gets three rolls of fabrics tissues
+// (less if the player does not have a capacity in his / her cart)
 // ----------------------------------------------------------------------------
 
 bool FabricManufacturesTile::action(Player& player){
@@ -90,6 +96,8 @@ Tile* FabricManufacturesTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Jeweler
+// For 2 pieces of gold, the player gets 3 pieces of jewelry (less if the
+// player does not have a capacity in his cart).
 // ----------------------------------------------------------------------------
 
 bool JewelerTile::action(Player& player){
@@ -114,6 +122,7 @@ Tile* JewelerTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Cart Manufacturer
+// For 7 pieces of gold, the capacity of the cart is increased by 3.
 // ----------------------------------------------------------------------------
 
 bool CartManufacturerTile::action(Player& player){
@@ -132,6 +141,8 @@ Tile* CartManufacturerTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Small Market
+// A player can sell 1 roll of fabric, 1 jewel and 1 sack of spices for 8
+// pieces of gold.
 // ----------------------------------------------------------------------------
 
 bool SmallMarketTile::action(Player& player){
@@ -151,6 +162,7 @@ Tile* SmallMarketTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Spice Market
+// A player can sell 3 sacks of spices for 6 pieces of gold.
 // ----------------------------------------------------------------------------
 
 bool SpiceMarketTile::action(Player& player){
@@ -167,6 +179,7 @@ Tile* SpiceMarketTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Jelewry Market
+// A player can sell 3 pieces of jewelry for 6 pieces of gold.
 // ----------------------------------------------------------------------------
 
 bool JelewryMarketTile::action(Player& player){
@@ -183,6 +196,7 @@ Tile* JelewryMarketTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Fabric Market
+// A player can sell 3 rolls of fabrics for 6 pieces of gold.
 // ----------------------------------------------------------------------------
 
 bool FabricMarketTile::action(Player& player){
@@ -198,6 +212,8 @@ Tile* FabricMarketTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Black Market
+// For 1 piece of gold, a player can get between 0 and 5 goods at random (less
+// if the player does not have a capacity in his / her cart).
 // ----------------------------------------------------------------------------
 
 bool BlackMarketTile::action(Player& player){
@@ -235,6 +251,10 @@ Tile* BlackMarketTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Casino
+// For 1 piece of gold, the player has 2 in 5 chance to loose, i.e., win 0
+// pieces of gold, a 3 out of 10 chance to get 2 pieces of gold, a 2 out of 10
+// chance to get 3 pieces of gold and a 1 in 10 chance to win 10 pieces of
+// gold.
 // ----------------------------------------------------------------------------
 
 bool CasinoTile::action(Player& player){
@@ -263,6 +283,8 @@ Tile* CasinoTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Gem Merchant
+// A player can buy a ruby. The first ruby costs 12 gold coins, the second ruby
+// to be purchased costs 13, the third 14, etc.
 // ----------------------------------------------------------------------------
 
 bool GemMerchantTile::action(Player& player){
@@ -275,6 +297,8 @@ Tile* GemMerchantTile::clone(){
 
 // ----------------------------------------------------------------------------
 // Palace
+// A player can get a ruby in exchange for 5 rolls of fabrics, 5 pieces of
+// jewelry and 5 sacks of spices.
 // ----------------------------------------------------------------------------
 
 bool PalaceTile::action(Player& player){
