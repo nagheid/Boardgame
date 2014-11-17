@@ -35,7 +35,7 @@ public:
 	virtual Tile* clone();
 };
 
-class CarManufacturerTile : public Tile {
+class CartManufacturerTile : public Tile {
 public:
 	virtual bool action(Player& player);
 	virtual Tile* clone();

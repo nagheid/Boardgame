@@ -1,5 +1,6 @@
 #include "tile.h"
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -48,7 +49,7 @@ bool SpiceMerchantTile::action(Player& player){
     if(player.getGold() >= 2 && space > 0){
         player.setGold(player.getGold() - 2);
         if(space < 3){
-            player.setSpice(cart);
+			player.setSpice(player.getSpice() + space);
         }
         else{
             player.setSpice(player.getSpice() + 3);
@@ -72,7 +73,7 @@ bool FabricManufacturesTile::action(Player& player){
     if(player.getGold() >= 2 && space > 0){
         player.setGold(player.getGold() - 2);
         if(space < 3){
-            player.setFabric(cart);
+			player.setFabric(player.getFabric() + space);
         }
         else{
             player.setFabric(player.getFabric() + 3);
@@ -96,7 +97,7 @@ bool JewelerTile::action(Player& player){
     if(player.getGold() >= 2 && space > 0){
         player.setGold(player.getGold() - 2);
         if(space < 3){
-            player.setJewel(cart);
+			player.setJewel(player.getJewel() + space);
         }
         else{
             player.setJewel(player.getJewel() + 3);
@@ -124,8 +125,8 @@ bool CartManufacturerTile::action(Player& player){
     return false;
 }
 
-Tile* CarManufacturerTile::clone(){
-	return &CarManufacturerTile();
+Tile* CartManufacturerTile::clone(){
+	return &CartManufacturerTile();
 }
 
 
@@ -138,7 +139,7 @@ bool SmallMarketTile::action(Player& player){
         player.setFabric(player.getFabric() - 1);
         player.setJewel(player.getJewel() - 1);
         player.setFabric(player.getFabric() -1);
-        player.setGold(player.getGold() + 8;
+        player.setGold(player.getGold() + 8);
         return true;
     }
     return false;
@@ -201,6 +202,30 @@ Tile* FabricMarketTile::clone(){
 
 bool BlackMarketTile::action(Player& player){
 
+	int numOfItems = rand() % 6;
+	int space = player.getCart() - player.totalItems();
+
+	if (space < numOfItems){
+		numOfItems = space;
+	}
+
+	for (int i = 0; i < numOfItems; i++){
+		int tileNum = rand() % 4 + 1;
+		if (tileNum == 1){
+			player.setSpice(player.getSpice() + 1);
+		}
+		else if (tileNum == 2){
+			player.setFabric(player.getFabric() + 1);
+		}
+		else if (tileNum == 3){
+			player.setJewel(player.getJewel() + 1);
+		}
+		else if (tileNum == 4){
+			player.setRuby(player.getRuby() + 1);
+		}
+	}
+
+	return true;
 }
 
 Tile* BlackMarketTile::clone(){
@@ -213,7 +238,23 @@ Tile* BlackMarketTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool CasinoTile::action(Player& player){
+	if (player.getGold() < 1){
+		return false;
+	}
 
+	int num = rand() % 10 + 1;
+
+	if (num == 1){
+		player.setGold(player.getGold() + 10);
+	}
+	else if (num > 1 && num < 4){
+		player.setGold(player.getGold() + 3);
+	}
+	else if (num > 3 && num < 7){
+		player.setGold(player.getGold() + 2);
+	}
+
+	return true;
 }
 
 Tile* CasinoTile::clone(){
@@ -237,7 +278,14 @@ Tile* GemMerchantTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool PalaceTile::action(Player& player){
-
+	if (player.getFabric() >= 5 && player.getJewel() >= 5 && player.getSpice() >= 5){
+		player.setFabric(player.getFabric() - 5);
+		player.setJewel(player.getJewel() - 5);
+		player.setSpice(player.getSpice() - 5);
+		player.setRuby(player.getRuby() + 1);
+		return true;
+	}
+	return false;
 }
 
 Tile* PalaceTile::clone(){
