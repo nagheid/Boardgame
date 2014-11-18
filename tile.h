@@ -11,6 +11,12 @@ public:
 	ostream& operator<<(ostream& os);
 };
 
+class TileFactory {
+public:
+	TileFactory(int numOfTiles);
+	Tile* next();
+};
+
 class RestaurantTile : public Tile {
 public:
 	virtual bool action(Player& player);
