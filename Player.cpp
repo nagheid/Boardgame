@@ -16,7 +16,9 @@ bool Player::pay(Player& player){
 }
 
 void Player::eat(){
-	food--;
+	if (food > 0){
+		food--;
+	}
 }
 
 int Player::totalItems(){
