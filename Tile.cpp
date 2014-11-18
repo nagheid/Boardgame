@@ -49,7 +49,7 @@ Tile* RestaurantTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool SpiceMerchantTile::action(Player& player){
-    int space = player.getCart() - player.totalItems();
+	int space = player.getCart() - player.totalGoods();
     if(player.getGold() >= 2 && space > 0){
         player.setGold(player.getGold() - 2);
         if(space < 3){
@@ -75,7 +75,7 @@ Tile* SpiceMerchantTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool FabricManufacturesTile::action(Player& player){
-    int space = player.getCart() - player.totalItems();
+	int space = player.getCart() - player.totalGoods();
     if(player.getGold() >= 2 && space > 0){
         player.setGold(player.getGold() - 2);
         if(space < 3){
@@ -101,7 +101,7 @@ Tile* FabricManufacturesTile::clone(){
 // ----------------------------------------------------------------------------
 
 bool JewelerTile::action(Player& player){
-    int space = player.getCart() - player.totalItems();
+	int space = player.getCart() - player.totalGoods();
     if(player.getGold() >= 2 && space > 0){
         player.setGold(player.getGold() - 2);
         if(space < 3){
@@ -219,7 +219,7 @@ Tile* FabricMarketTile::clone(){
 bool BlackMarketTile::action(Player& player){
 
 	int numOfItems = rand() % 6;
-	int space = player.getCart() - player.totalItems();
+	int space = player.getCart() - player.totalGoods();
 
 	if (space < numOfItems){
 		numOfItems = space;
