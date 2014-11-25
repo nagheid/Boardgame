@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "player.h"
 
 using namespace std;
@@ -9,12 +10,6 @@ public:
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 	ostream& operator<<(ostream& os);
-};
-
-class TileFactory {
-public:
-	TileFactory(int numOfTiles);
-	Tile* next();
 };
 
 class RestaurantTile : public Tile {
@@ -93,4 +88,19 @@ class PalaceTile : public Tile {
 public:
 	virtual bool action(Player& player);
 	virtual Tile* clone();
+};
+
+class TileFactory {
+private:
+	static TileFactory* instance;
+	int nTiles;
+	int max;
+	vector<Tile> tiles;
+	TileFactory(int _nTiles);
+	TileFactory(TileFactory const&) {};
+	TileFactory& operator=(TileFactory const&){};
+
+public:
+	static TileFactory* get(int _nTiles);
+	Tile* next();
 };
