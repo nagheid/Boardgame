@@ -22,9 +22,6 @@ Tile* Tile::clone(){
 }
 
 ostream& Tile::operator<<(ostream& os){
-
-	os << 
-
 	return os;
 }
 
@@ -296,12 +293,21 @@ Tile* CasinoTile::clone(){
 // to be purchased costs 13, the third 14, etc.
 // ----------------------------------------------------------------------------
 
-bool GemMerchantTile::action(Player& player){
+GemMerchantTile::GemMerchantTile(int _sold) : sold(_sold) {}
+
+bool GemMerchantTile::action(Player& player) {
+	int nextSellPrice = 12 + sold;
+	if (player.getGold() >= nextSellPrice){
+		player.setGold(player.getGold() - nextSellPrice);
+		player.setRuby(player.getRuby() + 1);
+		sold++;
+		return true;
+	}
 	return false;
 }
 
 Tile* GemMerchantTile::clone(){
-	return &GemMerchantTile();
+	return &GemMerchantTile(sold);
 }
 
 // ----------------------------------------------------------------------------

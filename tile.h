@@ -79,7 +79,10 @@ public:
 };
 
 class GemMerchantTile : public Tile {
+private:
+	int sold;
 public:
+	GemMerchantTile(int _sold = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
