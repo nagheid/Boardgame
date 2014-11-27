@@ -10,7 +10,7 @@ using namespace std;
 // ----------------------------------------------------------------------------
 
 bool Tile::operator==(const Tile &t){
-
+	return this == &t;
 }
 
 bool Tile::action(Player& player){
@@ -22,7 +22,7 @@ Tile* Tile::clone(){
 }
 
 ostream& Tile::operator<<(ostream& os){
-
+	return os;
 }
 
 
@@ -169,7 +169,9 @@ bool SpiceMarketTile::action(Player& player){
     if(player.getSpice() >= 3){
         player.setSpice(player.getSpice() - 3);
         player.setGold(player.getGold() + 6);
+		return true;
     }
+	return false;
 }
 
 Tile* SpiceMarketTile::clone(){
@@ -186,7 +188,9 @@ bool JelewryMarketTile::action(Player& player){
     if(player.getJewel() >= 3){
         player.setJewel(player.getJewel() - 3);
         player.setGold(player.getGold() + 6);
+		return true;
     }
+	return false;
 }
 
 Tile* JelewryMarketTile::clone(){
@@ -203,7 +207,9 @@ bool FabricMarketTile::action(Player& player){
     if(player.getFabric() >= 3){
         player.setFabric(player.getFabric() - 3);
         player.setGold(player.getGold() + 6);
+		return true;
     }
+	return false;
 }
 
 Tile* FabricMarketTile::clone(){
@@ -287,12 +293,21 @@ Tile* CasinoTile::clone(){
 // to be purchased costs 13, the third 14, etc.
 // ----------------------------------------------------------------------------
 
-bool GemMerchantTile::action(Player& player){
+GemMerchantTile::GemMerchantTile(int _sold) : sold(_sold) {}
 
+bool GemMerchantTile::action(Player& player) {
+	int nextSellPrice = 12 + sold;
+	if (player.getGold() >= nextSellPrice){
+		player.setGold(player.getGold() - nextSellPrice);
+		player.setRuby(player.getRuby() + 1);
+		sold++;
+		return true;
+	}
+	return false;
 }
 
 Tile* GemMerchantTile::clone(){
-	return &GemMerchantTile();
+	return &GemMerchantTile(sold);
 }
 
 // ----------------------------------------------------------------------------
@@ -314,4 +329,63 @@ bool PalaceTile::action(Player& player){
 
 Tile* PalaceTile::clone(){
 	return &PalaceTile();
+}
+
+
+TileFactory::TileFactory(int _nTiles) : nTiles(_nTiles), max(_nTiles-1), tiles(_nTiles) {
+
+	int numberForEach = (nTiles / 14);
+
+	int desetTilesToInsert = nTiles - numberForEach*14;
+
+	for (int i = 0; i < numberForEach; i++){
+		tiles.push_back(Tile());
+		tiles.push_back(RestaurantTile());
+		tiles.push_back(SpiceMerchantTile());
+		tiles.push_back(FabricManufacturesTile());
+		tiles.push_back(JewelerTile());
+		tiles.push_back(CartManufacturerTile());
+		tiles.push_back(SmallMarketTile());
+		tiles.push_back(SpiceMarketTile());
+		tiles.push_back(JelewryMarketTile());
+		tiles.push_back(FabricMarketTile());
+		tiles.push_back(BlackMarketTile());
+		tiles.push_back(CasinoTile());
+		tiles.push_back(GemMerchantTile());
+		tiles.push_back(PalaceTile());
+	}
+
+	for (int i = 0; i < desetTilesToInsert; i++){
+		tiles.push_back(Tile());
+	}
+
+}
+
+TileFactory* TileFactory::get(int _nTiles){
+	if (!instance){
+		instance = new TileFactory(_nTiles);
+	}
+	return instance;
+}
+
+Tile* TileFactory::next(){
+	if (instance && max >= 0){
+
+		// Get a random int within size of remaining tiles
+		int i = rand() % (max + 1);
+
+		// Get references to the tiles to switch
+		Tile& chosenTile = tiles[i];
+		Tile& maxTile = tiles[max];
+
+		// Swithc tiles
+		tiles[i] = maxTile;
+		tiles[max] = chosenTile;
+
+		// Decrement the size of remaining tiles
+		max--;
+
+		return &chosenTile;
+	}
+	return nullptr;
 }
