@@ -5,90 +5,105 @@
 using namespace std;
 
 class Tile {
+private:
+	int actionCount;
 public:
+	Tile(int actionCount = 0);
 	bool operator==(const Tile &t);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 	ostream& operator<<(ostream& os);
+
+	int getActionCount(){ return actionCount; }
 };
 
 class RestaurantTile : public Tile {
 public:
+	RestaurantTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class SpiceMerchantTile : public Tile {
 public:
+	SpiceMerchantTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class FabricManufacturesTile : public Tile {
 public:
+	FabricManufacturesTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class JewelerTile : public Tile {
 public:
+	JewelerTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class CartManufacturerTile : public Tile {
 public:
+	CartManufacturerTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class SmallMarketTile : public Tile {
 public:
+	SmallMarketTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class SpiceMarketTile : public Tile {
 public:
+	SpiceMarketTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class JelewryMarketTile : public Tile {
 public:
+	JelewryMarketTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class FabricMarketTile : public Tile {
 public:
+	FabricMarketTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class BlackMarketTile : public Tile {
 public:
+	BlackMarketTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class CasinoTile : public Tile {
 public:
+	CasinoTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class GemMerchantTile : public Tile {
-private:
-	int sold;
 public:
-	GemMerchantTile(int _sold = 0);
+	GemMerchantTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };
 
 class PalaceTile : public Tile {
 public:
+	PalaceTile(int actionCount = 0);
 	virtual bool action(Player& player);
 	virtual Tile* clone();
 };

@@ -9,12 +9,15 @@ using namespace std;
 // No action is possible on this tile. This is the base class behaviour
 // ----------------------------------------------------------------------------
 
+Tile::Tile(int _actionCount) : actionCount(_actionCount) {}
+
 bool Tile::operator==(const Tile &t){
 	return this == &t;
 }
 
 bool Tile::action(Player& player){
-	return false;
+	actionCount++;
+	return true;
 }
 
 Tile* Tile::clone(){
@@ -22,7 +25,7 @@ Tile* Tile::clone(){
 }
 
 ostream& Tile::operator<<(ostream& os){
-	return os;
+	return os << "(" << actionCount << ")";
 }
 
 
@@ -31,6 +34,8 @@ ostream& Tile::operator<<(ostream& os){
 // The number of food items of a player is replenished and will be set to 10.
 // This is the initial position of all players.
 // ----------------------------------------------------------------------------
+
+RestaurantTile::RestaurantTile(int _actionCount) : Tile(_actionCount) {}
 
 bool RestaurantTile::action(Player& player){
     player.setFood(10);
@@ -47,6 +52,8 @@ Tile* RestaurantTile::clone(){
 // For 2 pieces of gold, a player can purchase 3 sacks of spices (less if the
 // player does not have a capacity in his / her cart).
 // ----------------------------------------------------------------------------
+
+SpiceMerchantTile::SpiceMerchantTile(int _actionCount) : Tile(_actionCount) {}
 
 bool SpiceMerchantTile::action(Player& player){
 	int space = player.getCart() - player.totalGoods();
@@ -74,6 +81,8 @@ Tile* SpiceMerchantTile::clone(){
 // (less if the player does not have a capacity in his / her cart)
 // ----------------------------------------------------------------------------
 
+FabricManufacturesTile::FabricManufacturesTile(int _actionCount) : Tile(_actionCount) {}
+
 bool FabricManufacturesTile::action(Player& player){
 	int space = player.getCart() - player.totalGoods();
     if(player.getGold() >= 2 && space > 0){
@@ -100,6 +109,8 @@ Tile* FabricManufacturesTile::clone(){
 // player does not have a capacity in his cart).
 // ----------------------------------------------------------------------------
 
+JewelerTile::JewelerTile(int _actionCount) : Tile(_actionCount) {}
+
 bool JewelerTile::action(Player& player){
 	int space = player.getCart() - player.totalGoods();
     if(player.getGold() >= 2 && space > 0){
@@ -125,6 +136,8 @@ Tile* JewelerTile::clone(){
 // For 7 pieces of gold, the capacity of the cart is increased by 3.
 // ----------------------------------------------------------------------------
 
+CartManufacturerTile::CartManufacturerTile(int _actionCount) : Tile(_actionCount) {}
+
 bool CartManufacturerTile::action(Player& player){
     if(player.getGold() >= 7){
         player.setGold(player.getGold() - 7);
@@ -144,6 +157,8 @@ Tile* CartManufacturerTile::clone(){
 // A player can sell 1 roll of fabric, 1 jewel and 1 sack of spices for 8
 // pieces of gold.
 // ----------------------------------------------------------------------------
+
+SmallMarketTile::SmallMarketTile(int _actionCount) : Tile(_actionCount) {}
 
 bool SmallMarketTile::action(Player& player){
     if(player.getFabric() > 0 && player.getJewel() > 0 && player.getFabric() > 0){
@@ -165,6 +180,8 @@ Tile* SmallMarketTile::clone(){
 // A player can sell 3 sacks of spices for 6 pieces of gold.
 // ----------------------------------------------------------------------------
 
+SpiceMarketTile::SpiceMarketTile(int _actionCount) : Tile(_actionCount) {}
+
 bool SpiceMarketTile::action(Player& player){
     if(player.getSpice() >= 3){
         player.setSpice(player.getSpice() - 3);
@@ -183,6 +200,8 @@ Tile* SpiceMarketTile::clone(){
 // Jelewry Market
 // A player can sell 3 pieces of jewelry for 6 pieces of gold.
 // ----------------------------------------------------------------------------
+
+JelewryMarketTile::JelewryMarketTile(int _actionCount) : Tile(_actionCount) {}
 
 bool JelewryMarketTile::action(Player& player){
     if(player.getJewel() >= 3){
@@ -203,6 +222,8 @@ Tile* JelewryMarketTile::clone(){
 // A player can sell 3 rolls of fabrics for 6 pieces of gold.
 // ----------------------------------------------------------------------------
 
+FabricMarketTile::FabricMarketTile(int _actionCount) : Tile(_actionCount) {}
+
 bool FabricMarketTile::action(Player& player){
     if(player.getFabric() >= 3){
         player.setFabric(player.getFabric() - 3);
@@ -221,6 +242,8 @@ Tile* FabricMarketTile::clone(){
 // For 1 piece of gold, a player can get between 0 and 5 goods at random (less
 // if the player does not have a capacity in his / her cart).
 // ----------------------------------------------------------------------------
+
+BlackMarketTile::BlackMarketTile(int _actionCount) : Tile(_actionCount) {}
 
 bool BlackMarketTile::action(Player& player){
 
@@ -263,6 +286,8 @@ Tile* BlackMarketTile::clone(){
 // gold.
 // ----------------------------------------------------------------------------
 
+CasinoTile::CasinoTile(int _actionCount) : Tile(_actionCount) {}
+
 bool CasinoTile::action(Player& player){
 	if (player.getGold() < 1){
 		return false;
@@ -293,7 +318,7 @@ Tile* CasinoTile::clone(){
 // to be purchased costs 13, the third 14, etc.
 // ----------------------------------------------------------------------------
 
-GemMerchantTile::GemMerchantTile(int _sold) : sold(_sold) {}
+GemMerchantTile::GemMerchantTile(int _actionCount) : Tile(_actionCount) {}
 
 bool GemMerchantTile::action(Player& player) {
 	int nextSellPrice = 12 + sold;
@@ -307,7 +332,7 @@ bool GemMerchantTile::action(Player& player) {
 }
 
 Tile* GemMerchantTile::clone(){
-	return &GemMerchantTile(sold);
+	return &GemMerchantTile(getActionCount());
 }
 
 // ----------------------------------------------------------------------------
@@ -315,6 +340,8 @@ Tile* GemMerchantTile::clone(){
 // A player can get a ruby in exchange for 5 rolls of fabrics, 5 pieces of
 // jewelry and 5 sacks of spices.
 // ----------------------------------------------------------------------------
+
+PalaceTile::PalaceTile(int _actionCount) : Tile(_actionCount) {}
 
 bool PalaceTile::action(Player& player){
 	if (player.getFabric() >= 5 && player.getJewel() >= 5 && player.getSpice() >= 5){
