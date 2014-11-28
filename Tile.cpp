@@ -321,11 +321,11 @@ Tile* CasinoTile::clone(){
 GemMerchantTile::GemMerchantTile(int _actionCount) : Tile(_actionCount) {}
 
 bool GemMerchantTile::action(Player& player) {
-	int nextSellPrice = 12 + sold;
+	int nextSellPrice = 12 + getActionCount();
 	if (player.getGold() >= nextSellPrice){
 		player.setGold(player.getGold() - nextSellPrice);
 		player.setRuby(player.getRuby() + 1);
-		sold++;
+		Tile::action(player);
 		return true;
 	}
 	return false;
