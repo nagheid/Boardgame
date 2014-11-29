@@ -1,10 +1,23 @@
 #include "gameboard.h"
 
+//#define GAMEBOARD_TEMP
+
 template <class T, class J, const int R, const int C>
 GameBoard<T,J,R,C>::GameBoard(const vector<J> _players){
 	// initially, all players at tiles 0,0
 	//if ( d_tiles.size() > 0 )
 	// static_assert(d_tiles.size() > 0)
+	T baseTile = d_tiles[0][0];
+	d_board[baseTile] = _players;
+}
+
+template <class T, class J, const int R, const int C>
+GameBoard<T, J, R, C>::GameBoard(const vector<string> _playerNames){
+	vector<J> players;
+	for (auto name : _playerNames) {
+		players.push_back(Player(name));
+	}
+
 	T baseTile = d_tiles[0][0];
 	d_board[baseTile] = _players;
 }

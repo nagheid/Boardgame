@@ -1,3 +1,6 @@
+#ifndef TILE_H
+#define TILE_H
+
 #include <iostream>
 #include <vector>
 #include "player.h"
@@ -121,5 +124,7 @@ private:
 
 public:
 	static TileFactory* get(int _nTiles);
-	Tile* next();
+	Tile next();
 };
+
+#endif

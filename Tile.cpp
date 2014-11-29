@@ -9,7 +9,7 @@ using namespace std;
 // No action is possible on this tile. This is the base class behaviour
 // ----------------------------------------------------------------------------
 
-Tile::Tile(int _actionCount=0) : actionCount(_actionCount) {}
+Tile::Tile(int _actionCount) : actionCount(_actionCount) {}
 
 bool Tile::operator==(const Tile &t){
 	return this == &t;
@@ -57,7 +57,7 @@ Tile* RestaurantTile::clone(){
 // player does not have a capacity in his / her cart).
 // ----------------------------------------------------------------------------
 
-SpiceMerchantTile::SpiceMerchantTile(int _actionCount=0) : Tile(_actionCount) {}
+SpiceMerchantTile::SpiceMerchantTile(int _actionCount) : Tile(_actionCount) {}
 
 bool SpiceMerchantTile::action(Player& player){
 	int space = player.getCart() - player.totalGoods();
@@ -85,7 +85,7 @@ Tile* SpiceMerchantTile::clone(){
 // (less if the player does not have a capacity in his / her cart)
 // ----------------------------------------------------------------------------
 
-FabricManufacturesTile::FabricManufacturesTile(int _actionCount=0) : Tile(_actionCount) {}
+FabricManufacturesTile::FabricManufacturesTile(int _actionCount) : Tile(_actionCount) {}
 
 bool FabricManufacturesTile::action(Player& player){
 	int space = player.getCart() - player.totalGoods();
@@ -113,7 +113,7 @@ Tile* FabricManufacturesTile::clone(){
 // player does not have a capacity in his cart).
 // ----------------------------------------------------------------------------
 
-JewelerTile::JewelerTile(int _actionCount-0) : Tile(_actionCount) {}
+JewelerTile::JewelerTile(int _actionCount) : Tile(_actionCount) {}
 
 bool JewelerTile::action(Player& player){
 	int space = player.getCart() - player.totalGoods();
@@ -140,7 +140,7 @@ Tile* JewelerTile::clone(){
 // For 7 pieces of gold, the capacity of the cart is increased by 3.
 // ----------------------------------------------------------------------------
 
-CartManufacturerTile::CartManufacturerTile(int _actionCount=0) : Tile(_actionCount) {}
+CartManufacturerTile::CartManufacturerTile(int _actionCount) : Tile(_actionCount) {}
 
 bool CartManufacturerTile::action(Player& player){
     if(player.getGold() >= 7){
@@ -162,7 +162,7 @@ Tile* CartManufacturerTile::clone(){
 // pieces of gold.
 // ----------------------------------------------------------------------------
 
-SmallMarketTile::SmallMarketTile(int _actionCount=0) : Tile(_actionCount) {}
+SmallMarketTile::SmallMarketTile(int _actionCount) : Tile(_actionCount) {}
 
 bool SmallMarketTile::action(Player& player){
     if(player.getFabric() > 0 && player.getJewel() > 0 && player.getFabric() > 0){
@@ -184,7 +184,7 @@ Tile* SmallMarketTile::clone(){
 // A player can sell 3 sacks of spices for 6 pieces of gold.
 // ----------------------------------------------------------------------------
 
-SpiceMarketTile::SpiceMarketTile(int _actionCount=0) : Tile(_actionCount) {}
+SpiceMarketTile::SpiceMarketTile(int _actionCount) : Tile(_actionCount) {}
 
 bool SpiceMarketTile::action(Player& player){
     if(player.getSpice() >= 3){
@@ -205,7 +205,7 @@ Tile* SpiceMarketTile::clone(){
 // A player can sell 3 pieces of jewelry for 6 pieces of gold.
 // ----------------------------------------------------------------------------
 
-JelewryMarketTile::JelewryMarketTile(int _actionCount=0) : Tile(_actionCount) {}
+JelewryMarketTile::JelewryMarketTile(int _actionCount) : Tile(_actionCount) {}
 
 bool JelewryMarketTile::action(Player& player){
     if(player.getJewel() >= 3){
@@ -226,7 +226,7 @@ Tile* JelewryMarketTile::clone(){
 // A player can sell 3 rolls of fabrics for 6 pieces of gold.
 // ----------------------------------------------------------------------------
 
-FabricMarketTile::FabricMarketTile(int _actionCount=0) : Tile(_actionCount) {}
+FabricMarketTile::FabricMarketTile(int _actionCount) : Tile(_actionCount) {}
 
 bool FabricMarketTile::action(Player& player){
     if(player.getFabric() >= 3){
@@ -247,7 +247,7 @@ Tile* FabricMarketTile::clone(){
 // if the player does not have a capacity in his / her cart).
 // ----------------------------------------------------------------------------
 
-BlackMarketTile::BlackMarketTile(int _actionCount=0) : Tile(_actionCount) {}
+BlackMarketTile::BlackMarketTile(int _actionCount) : Tile(_actionCount) {}
 
 bool BlackMarketTile::action(Player& player){
 
@@ -290,7 +290,7 @@ Tile* BlackMarketTile::clone(){
 // gold.
 // ----------------------------------------------------------------------------
 
-CasinoTile::CasinoTile(int _actionCount=0) : Tile(_actionCount) {}
+CasinoTile::CasinoTile(int _actionCount) : Tile(_actionCount) {}
 
 bool CasinoTile::action(Player& player){
 	if (player.getGold() < 1){
@@ -322,7 +322,7 @@ Tile* CasinoTile::clone(){
 // to be purchased costs 13, the third 14, etc.
 // ----------------------------------------------------------------------------
 
-GemMerchantTile::GemMerchantTile(int _actionCount=0) : Tile(_actionCount) {}
+GemMerchantTile::GemMerchantTile(int _actionCount) : Tile(_actionCount) {}
 
 bool GemMerchantTile::action(Player& player) {
 	int nextSellPrice = 12 + getActionCount();
@@ -345,7 +345,7 @@ Tile* GemMerchantTile::clone(){
 // jewelry and 5 sacks of spices.
 // ----------------------------------------------------------------------------
 
-PalaceTile::PalaceTile(int _actionCount=0) : Tile(_actionCount) {}
+PalaceTile::PalaceTile(int _actionCount) : Tile(_actionCount) {}
 
 bool PalaceTile::action(Player& player){
 	if (player.getFabric() >= 5 && player.getJewel() >= 5 && player.getSpice() >= 5){
@@ -399,7 +399,7 @@ TileFactory* TileFactory::get(int _nTiles){
 	return instance;
 }
 
-Tile* TileFactory::next(){
+Tile TileFactory::next(){
 	if (instance && max >= 0){
 
 		// Get a random int within size of remaining tiles
@@ -416,7 +416,7 @@ Tile* TileFactory::next(){
 		// Decrement the size of remaining tiles
 		max--;
 
-		return &chosenTile;
+		return chosenTile;
 	}
-	return nullptr;
+	return NULL;
 }

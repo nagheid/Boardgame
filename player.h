@@ -1,3 +1,6 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include <iostream>
 
 using std::string;
@@ -13,6 +16,11 @@ class Player {
 	int food;
 
 public:
+	Player(string _name) :	name(_name), gold(5), 
+							ruby(0), spice(1), 
+							fabric(1), jewel(1),
+							cart(9), food(10) {};
+
 	/*
 	* Returns true if the player has food to act with. False if there is
 	* no food
@@ -62,3 +70,5 @@ public:
 	int getFood(){ return food; }
 	void setFood(int num){ food = num; }
 };
+
+#endif

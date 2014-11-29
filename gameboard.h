@@ -1,3 +1,6 @@
+#ifndef GAMEBOARD_H
+#define GAMEBOARD_H
+
 #include <iostream>
 #include <map>
 #include <unordered_map>
@@ -45,3 +48,5 @@ public:
 	const T& move(Move move, const string& playerName);
 
 };
+
+#endif
