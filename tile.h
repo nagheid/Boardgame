@@ -5,7 +5,7 @@
 using namespace std;
 
 class Tile {
-private:
+protected:
 	int actionCount;
 public:
 	Tile(int actionCount = 0);
@@ -15,6 +15,7 @@ public:
 	ostream& operator<<(ostream& os);
 
 	int getActionCount(){ return actionCount; }
+	friend istream& operator>>(istream&, Tile& tile);
 };
 
 class RestaurantTile : public Tile {

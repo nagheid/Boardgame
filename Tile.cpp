@@ -25,7 +25,12 @@ Tile* Tile::clone(){
 }
 
 ostream& Tile::operator<<(ostream& os){
-	return os << "(" << actionCount << ")";
+	return os << actionCount;
+}
+
+istream& operator>>(istream& is, Tile& tile){
+	is >> tile.actionCount;
+	return is;
 }
 
 
@@ -45,7 +50,6 @@ bool RestaurantTile::action(Player& player){
 Tile* RestaurantTile::clone(){
 	return &RestaurantTile();
 }
-
 
 // ----------------------------------------------------------------------------
 // Spice Merchant
