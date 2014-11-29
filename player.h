@@ -1,4 +1,9 @@
+#include <iostream>
+
+using std::string;
+
 class Player {
+	string name;
 	int gold;
 	int ruby;
 	int spice;
@@ -6,6 +11,7 @@ class Player {
 	int jewel;
 	int cart;
 	int food;
+
 public:
 	/*
 	* Returns true if the player has food to act with. False if there is
@@ -29,6 +35,10 @@ public:
 	* Returns the total amount of goods in the player's posession
 	*/
 	int totalGoods();
+
+	// Accessor methods for name
+	string	getName() { return name; }
+	void	setName(string _name) { name = _name; }
 
 	// Accessor methods for goods, gold, cart room and food
 	int getGold(){ return gold; }

@@ -1,21 +1,21 @@
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <vector>
 
 using std::map;
 using std::string;
+using std::unordered_map;
 using std::vector;
 
 template <class T, class J, const int R, const int C>
 class GameBoard {
-	// TODO might not need this
-	int d_numPlayers;
-	vector<J> d_players;
-
-	// TODO would be useful to use boost::multi_index's bidirectional map
-	vector<vector<vector<J>>> d_tilesVec;
+	// 2D vector of tiles
+	vector<vector<T>> d_tiles[R][C];
+	// Map of <tile, players>
+	map<T, vector<J>> d_board;
 	// OR
-	map<T, vector<J>> d_tilesMap;
+	//map<J, T> d_boardP;
 
 	enum Move {
 		UP,
@@ -25,9 +25,8 @@ class GameBoard {
 	};
 
 public:
-	GameBoard();
-
 	GameBoard(vector<J> players);
+	GameBoard(vector<string> playerNames);
 
 	void add(const T& tile, int row, int col);
 
@@ -44,4 +43,5 @@ public:
 	vector<J> getPlayers(const T& tile) const;
 
 	const T& move(Move move, const string& playerName);
+
 };
