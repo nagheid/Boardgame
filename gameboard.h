@@ -15,26 +15,20 @@ using std::string;
 using std::unordered_map;
 using std::vector;
 
-/*
-template<>
-struct std::hash<Tile>
-{
-	size_t operator()(const Tile& obj) const
-	{
-		return std::hash<const Tile*>()(&obj);
-	}
-};
-//*/
-//*
 template<class T>
-struct BoardHashFunction {
+struct TileHashFunction {
 	size_t operator() (const T& tile) const {
 		return std::hash<const T*>()(&tile);
-		//return std::hash<int>(rand() % 100 + 1);
-		//return std::hash<int>(tile->id); 
 	}
 };
-//*/
+
+template<class J>
+struct PlayerHashFunction {
+	size_t operator() (const J& player) const {
+		J p = player;
+		return std::hash<string>()(p.getName());
+	}
+};
 
 template <class T, class J, const int R, const int C>
 class GameBoard {
@@ -45,8 +39,9 @@ class GameBoard {
 	vector<vector<T>> d_tiles;
 
 	// Map of <tile, players>
-	unordered_map<T, vector<J>, BoardHashFunction<T>> d_board;
-	//map<T, vector<J>> d_board;
+	unordered_map<T, vector<J>, TileHashFunction<T>> d_board;
+	//unordered_map<T*, vector<J>, TileHashFunction<T>> d_board;
+	unordered_map<J, T, PlayerHashFunction<J>> d_boardPlayer;
 
 	enum Move {
 		UP,
@@ -57,7 +52,7 @@ class GameBoard {
 
 public:
 	GameBoard();
-	GameBoard(vector<J> _players);
+	GameBoard(vector<J> _players) : d_players(_players) {};
 	GameBoard(vector<string> _playerNames);
 
 	void add(const T& tile, int row, int col);
@@ -87,16 +82,12 @@ GameBoard<T, J, R, C>::GameBoard() {
 }
 
 template <class T, class J, const int R, const int C>
-GameBoard<T, J, R, C>::GameBoard(const vector<J> _players){
-	T baseTile = d_tiles[0][0];
-	//d_board[baseTile] = _players;
-}
-
-template <class T, class J, const int R, const int C>
 GameBoard<T, J, R, C>::GameBoard(vector<string> _playerNames) {
 	// Initialize players
 	for (auto name : _playerNames) {
-		d_players.push_back(J(name));
+		J player = J(name);
+		d_players.push_back(player);
+		d_boardPlayer[player];
 	}
 	cout << _playerNames.size() << endl;
 	cout << d_players.size() << endl;
@@ -127,14 +118,51 @@ void GameBoard<T, J, R, C>::setPlayers(vector<string> _playerNames){
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::setPlayers() {
 	auto baseTile = d_tiles[0][0];
-	d_board[baseTile] = d_players;
+
+	for (auto it = d_board.begin(); it != d_board.end(); ++it) {
+		cout << "Key: " << it->first << "\t";
+		cout << "Val: "; 
+		for (auto p : it->second)
+			cout << p.getName() << "\t";
+		cout << endl;
+	}
+	cout << "==AAA==" << endl;
+
+	for (auto it = d_boardPlayer.begin(); it != d_boardPlayer.end(); ++it) {
+		J player = it->first; 
+		cout << "Key: " << player.getName() << "\t";
+		cout << "Val: " << it->second << endl;
+	}
+	cout << "==BBB==" << endl;
+
+	//d_board[&baseTile] = d_players;
 	//d_board.insert(std::make_pair(baseTile, d_players));
 
-	vector<J> plyrs = d_board[baseTile];
+	vector<J> plyrs; // = d_board[&baseTile];
 	
+	for (auto it = d_boardPlayer.begin(); it != d_boardPlayer.end(); ++it) {
+		J player = it->first;
+		d_boardPlayer.insert(std::make_pair(player, baseTile));
+	}
+	cout << "==CCC==" << endl;
+	for (auto it = d_board.begin(); it != d_board.end(); ++it) {
+		cout << "Key: " << it->first << "\t";
+		cout << "Val: ";
+		for (auto p : it->second)
+			cout << p.getName() << "\t";
+		cout << endl;
+	}
+	cout << "==DDD==" << endl;
+	for (auto it = d_boardPlayer.begin(); it != d_boardPlayer.end(); ++it) {
+		J player = it->first;
+		cout << "Key: " << player.getName() << "\t";
+		cout << "Val: " << it->second << endl;
+	}
+	cout << "==EEE==" << endl;
+
 	cout << d_players.size() << endl; 
 	cout << plyrs.size() << endl;
-	cout << d_board[baseTile].size() << endl; 
+	//cout << d_board[&baseTile].size() << endl; 
 
 	for (auto p : plyrs) {
 		cout << "Name = " << p.getName() << endl;
@@ -150,7 +178,7 @@ void GameBoard<T, J, R, C>::add(const T& tile, int row, int col){
 	cout << &tile << " - " << &d_tiles[row][col] << endl;
 
 	//d_board[tile] = vector<J>();
-	//d_board.insert(std::make_pair<T, vector<J>>(tile, vector<J>()));
+	//d_board.insert(std::make_pair(tile, vector<J>()));
 	//d_board.addkey(tile);
 }
 

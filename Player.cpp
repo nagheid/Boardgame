@@ -1,7 +1,6 @@
 #include "player.h"
 
-
-bool Player::operator==(const Player &p){
+bool Player::operator==(const Player &p) const {
 	return this->name == p.name;
 }
 
