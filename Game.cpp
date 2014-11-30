@@ -22,7 +22,6 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		cin.exceptions(std::istream::failbit); 
 		int intM; cin >> intM;
 
-		// TODO there must be a better way
 		std::map<int, GameBoard<Tile, Player, N, N>::Move> map;
 		map[0] = GameBoard<Tile, Player, N, N>::UP;
 		map[1] = GameBoard<Tile, Player, N, N>::DOWN;
@@ -30,33 +29,51 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		map[3] = GameBoard<Tile, Player, N, N>::RIGHT;
 
 		GameBoard<Tile, Player, N, N>::Move m = map[intM];
-		cout << "Move = " << m << endl;
+		cout << "Player pick move: " << m << endl;
 
 		// TODO check if move is valid
 
 		// Move player to tile
-		Tile& t = (Tile&) bg.move(m, pName);
-		cout << "Returned tile : " << t << " (" << &t << ")" << endl;
+		Tile& old_tile = (Tile&)bg.getTile(pName);
+		cout << "Player was on tile:\t" << old_tile << endl; 
+
+		Tile& t = (Tile&)bg.move(m, pName);
+		cout << "Player is now on tile:\t" << t << endl;
 
 		// If player has food items
+		bool actionSuccess = false;
 		if (p.canAct()) {
+			// Other players on the tile
+			vector<Player> otherPlayers = bg.getPlayers(t);
+
 			// Display tile action
 			cout << t.getName() << endl;
 			cout << t.getDescription() << endl;
 			cout << endl;
 
-			cout << "Do action? 1 (True), 0 (false)" << endl;
 			// If player chooses action
+			cout << "Do action? 1 (True), 0 (false)" << endl;
 			bool makeAction;
 			cin >> makeAction;
-			if (makeAction) {
-				// TODO check if action is valid
 
+			// Check if action is valid
+			bool validAction = false;
+			if (!t.actionValid(p, otherPlayers.size() - 1)){
+				cout << "Cannot act on tile." << endl;
+				cout << "Please press any key to continue" << endl;
+				string placeholder;
+				cin >> placeholder;
+				validAction = false;
+				//return false; // true
+			} else {
+				validAction = true;
+			}
+
+			if (makeAction && validAction) {
 				// If tile has other players
-				vector<Player> opL = bg.getPlayers(t);
-				if (p.getGold() >= (int)opL.size()) {
+				if (p.getGold() >= (int)otherPlayers.size()) {
 					p.eat();
-					for (auto op : opL) {
+					for (auto op : otherPlayers) {
 						// Player pays other players
 						p.pay(op);
 						bg.setPlayer(op);
@@ -65,13 +82,14 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 					t.action(p);
 					bg.setPlayer(p);
 				}
+				actionSuccess = true;
 			}
 
 			// Display player status
 			cout << p << endl;
 		}
 
-		return true;
+		return actionSuccess;
 	} catch (std::istream::failure e) {
 		cout << "Incorrect key pressed";
 		cin.clear();
@@ -82,15 +100,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 	return false;
 }
 
-template<typename T>
-const T in_get(istream &in = std::cin) {
-	T x;
-	if (!(in >> x)) throw "Invalid input";
-	return x;
-}
-
 int main() {
-	// TODO
 	// SETUP THE BOARD //
 
 	// Input the names of all players
@@ -126,7 +136,8 @@ int main() {
 		}
 	}
 
-	bg.setPlayers(); // playerNames);
+	// PLAY THE GAME //
+	bg.setPlayers();
 
 	// Iterate over players
 	for (auto pName : playerNames) {

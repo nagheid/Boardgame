@@ -17,25 +17,6 @@ using std::vector;
 
 #define PKEY
 #define PKEY_VEC
-//#define TKEY
-//#define TKEY_PTR
-//#define TKEY_ADD
-
-template<class T>
-struct TileHashFunction {
-#ifdef TKEY
-	size_t operator() (const T& tile) const {
-		//return std::hash<const T*>()(&tile);
-		T t = tile;
-		return std::hash<int>()(t.getId());
-	}
-#endif
-#ifdef TKEY_PTR
-	size_t operator() (const T* tile) const {
-		return std::hash<const T*>()(&tile);
-	}
-#endif
-};
 
 template<class J>
 struct PlayerHashFunction {
@@ -51,22 +32,9 @@ class GameBoard {
 	vector<J> d_players;
 
 	// 2D vector of tiles
-#ifdef TKEY
-	vector<vector<T>> d_tiles;
-#else
 	vector<vector<T*>> d_tiles;
-#endif
-#ifdef TKEY_ADD
-	vector<vector<uint32>> d_tiles;
-#endif
 
 	// Map of <tile, players>
-#ifdef TKEY
-	unordered_map<T, vector<J>, TileHashFunction<T>> d_board;
-#endif
-#ifdef TKEY_PTR
-	unordered_map<T*, vector<J>, TileHashFunction<T>> d_board;
-#endif
 #ifdef PKEY
 	// This is less efficient than using T as keys
 	// But it harder to hash over T since they have no
@@ -140,14 +108,6 @@ GameBoard<T, J, R, C>::GameBoard(vector<string> _playerNames) {
 	// Initialize empty tile vector
 	for (int i = 0; i < R; i++)	{
 		for (int j = 0; j < C; j++)	{
-#ifdef TKEY
-			d_tiles.push_back(vector <T>());
-			d_tiles[i].push_back(T());
-#endif
-#ifdef TKEY_PTR
-			d_tiles.push_back(vector <T*>());
-			d_tiles[i].push_back(new T());
-#endif
 #ifdef PKEY
 			d_tiles.push_back(vector <T*>());
 			d_tiles[i].push_back(new T());
@@ -158,26 +118,12 @@ GameBoard<T, J, R, C>::GameBoard(vector<string> _playerNames) {
 
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::add(const T& tile, int row, int col){
-	//std::cout << d_tiles[row][col] << std::endl;
-#ifdef TKEY_PTR
-	*d_tiles[row][col] = tile;
-#endif
-#ifdef TKEY
-	d_tiles[row][col] = tile;
-	d_board[tile];
-#endif
 #ifdef PKEY
 	// The value in d_tiles is the address of the tile
 	*d_tiles[row][col] = tile;
 #endif
-	cout << tile << "(" << &tile << ") - " << d_tiles[row][col] << " (" << d_tiles[row][col] << ")" << endl;
-
-	//d_board[*tile];
-	//d_board.insert(std::make_pair(&tile, vector<J>()));
-	//d_board.addkey(tile);
 }
 
-#ifdef PKEY
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::setPlayers() {
 	auto baseTile = d_tiles[0][0];
@@ -189,47 +135,8 @@ void GameBoard<T, J, R, C>::setPlayers() {
 #else
 		d_board.insert(std::make_pair(player, baseTile));
 #endif
-		cout << "Key = " << player.getName() << "\t" << "Val = " << baseTile << "(add " << &baseTile << ")" << endl;
 	}
 }
-#else
-template <class T, class J, const int R, const int C>
-void GameBoard<T, J, R, C>::setPlayers() {
-	auto baseTile = d_tiles[0][0];
-
-	d_board.insert(std::make_pair(baseTile, d_players));
-	///*
-#ifdef TKEY
-	T* address = &baseTile;
-	cout << "BT address = " << address << endl;
-	vector<J> plyrs = d_board[*address];
-#endif
-#ifdef TKEY_PTR
-	vector<J> plyrs = d_board[baseTile];
-#endif
-	//*/
-	for (auto it = d_board.begin(); it != d_board.end(); ++it) {
-		cout << "Key: " << it->first << "\t" << (&(it->first)) << "\t";
-		cout << "Val: ";
-		for (auto p : it->second)
-			cout << p.getName() << "\t";
-		cout << endl;
-	}
-	cout << "==BBB==" << endl;
-
-	cout << d_players.size() << endl; 
-	cout << plyrs.size() << endl;
-	//cout << d_board[&baseTile].size() << endl; 
-
-	/*
-	for (auto p : plyrs) {
-		cout << "Name = " << p.getName() << endl;
-	}
-	//d_board.insert(make_pair(baseTile, d_players));
-	//d_board[baseTile] = d_players;
-	*/
-}
-#endif
 
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(int row, int col) const{
@@ -240,9 +147,7 @@ template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::getCoordinate(const T &tile, int *row, int *col) const{
 	for (int r = 0; r < R; r++) {
 		for (int c = 0; c < C; c++) {
-			//cout << *d_tiles[r][c] << "(" << d_tiles[r][c] << ") == " << tile << " (" << &tile << ")?" << endl;
 			if (*d_tiles[r][c] == tile) {
-				cout << "True" << endl;
 				*row = r;
 				*col = c;
 				return;
@@ -251,7 +156,6 @@ void GameBoard<T, J, R, C>::getCoordinate(const T &tile, int *row, int *col) con
 	}
 }
 
-#ifdef PKEY
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::setPlayer(J player){
 	// Iterate over players
@@ -276,24 +180,7 @@ void GameBoard<T, J, R, C>::setPlayer(J player){
 		}
 	}
 }
-#else
-template <class T, class J, const int R, const int C>
-void GameBoard<T, J, R, C>::setPlayer(J player){
-	// Iterate over map
-	for (auto tile_iter = d_board.begin(); tile_iter != d_board.end(); ++tile_iter) {
-		// Iterate over player vector
-		for (auto player_iter = tile_iter->second.begin(); player_iter != tile_iter->second.end(); ++player_iter) {
-			// If found player
-			if (player_iter->getName() == player.getName()) {
-				// Update pointer
-				*player_iter = player;
-			}
-		}
-	}
-}
-#endif
 
-#ifdef PKEY
 template <class T, class J, const int R, const int C>
 J GameBoard<T, J, R, C>::getPlayer(const string& playerName){
 	// Iterate over tiles
@@ -306,35 +193,15 @@ J GameBoard<T, J, R, C>::getPlayer(const string& playerName){
 
 	return NULL;
 }
-#else
-template <class T, class J, const int R, const int C>
-J GameBoard<T, J, R, C>::getPlayer(const string& playerName){
-	// Iterate over tiles
-	for (auto tile_iter = d_board.begin(); tile_iter != d_board.end(); ++tile_iter) {
-		// Iterate over player vector
-		for (auto player_iter = tile_iter->second.begin(); player_iter != tile_iter->second.end(); ++player_iter) {
-			if (player_iter->getName() == playerName) {
-				return *player_iter;
-			}
-		}
-	}
-	return NULL;
-}
-#endif
 
-#ifdef PKEY
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
-	//T tile;
 	// Iterate over tiles
 	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
 		J player = player_iter->first;
 		if (player.getName() == playerName) {
-			//tile = player_iter->second;
-			//break;
 #ifdef PKEY_VEC
 			vector<int> vec = player_iter->second;
-			cout << "[" << vec[0] << "," << vec[1] << "]" << endl;
 			return *d_tiles[vec[0]][vec[1]];
 #else
 			cout << *(player_iter->second) << endl;
@@ -345,34 +212,13 @@ const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
 	//return tile;
 	return NULL;
 }
-#else
-template <class T, class J, const int R, const int C>
-const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
-	T tile;
 
-	// Iterate over tiles
-	for (auto tile_iter = d_board.begin(); tile_iter != d_board.end(); ++tile_iter) {
-		// Iterate over player vector
-		for (auto player_iter = tile_iter->second.begin(); player_iter != tile_iter->second.end(); ++player_iter) {
-			J player = *player_iter;
-			if (player.getName() == playerName) {
-				tile = tile_iter->first;
-			}
-		}
-	}
-
-	return tile;
-}
-#endif
-
-#ifdef PKEY
 template <class T, class J, const int R, const int C>
 vector<J> GameBoard<T, J, R, C>::getPlayers(const T& tile) const{
 	int tmp_row = 0;
 	int tmp_col = 0;
 	getCoordinate(tile, &tmp_row, &tmp_col);
-	cout << "Input tile: " << tile << "(" << &tile << ") - " << tmp_row << ", " << tmp_col << endl;
-
+	
 	vector<J> players;
 	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
 #ifdef PKEY_VEC
@@ -380,7 +226,6 @@ vector<J> GameBoard<T, J, R, C>::getPlayers(const T& tile) const{
 		if (*d_tiles[vec[0]][vec[1]] == tile) {
 #else
 		T t = *(player_iter->second);
-		cout << t << endl;
 		if (t == tile) {
 #endif
 			J player = player_iter->first;
@@ -389,14 +234,7 @@ vector<J> GameBoard<T, J, R, C>::getPlayers(const T& tile) const{
 	}
 	return players;
 }
-#else
-template <class T, class J, const int R, const int C>
-vector<J> GameBoard<T, J, R, C>::getPlayers(const T& tile) const{
-	return d_board[tile];
-}
-#endif
 
-#ifdef PKEY
 template <class T, class J, const int R, const int C>
 bool GameBoard<T, J, R, C>::win(const string& playerName){
 	bool result = false;
@@ -409,23 +247,6 @@ bool GameBoard<T, J, R, C>::win(const string& playerName){
 	}
 	return result;
 }
-#else
-template <class T, class J, const int R, const int C>
-bool GameBoard<T, J, R, C>::win(const string& playerName){
-	bool result = false;
-	// Iterate over tiles
-	for (auto tile_iter = d_board.begin(); tile_iter != d_board.end(); ++tile_iter) {
-		// Iterate over player vector
-		for (auto player_iter = tile_iter->second.begin(); player_iter != tile_iter->second.end(); ++player_iter) {
-			if (player_iter->getName() == playerName && player_iter->getRuby() >= 5) {
-				result = true;
-				break;
-			}
-		}
-	}
-	return result;
-}
-#endif
 
 template <class T, class J, const int R, const int C>
 bool GameBoard<T, J, R, C>::moveValid(Move move, const string& playerName){
@@ -448,12 +269,10 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 	int old_row = 0;
 	int old_col = 0;
 	getCoordinate(old_tile, &old_row, &old_col);
-	cout << "Old tile: " << old_tile << "(" << old_tile << ";  " << &old_tile << ") - " << old_row << ", " << old_col << endl;
 
 	// Figure out which tile to move player to
 	int new_row = 0;
 	int new_col = 0;
-	//newCoordinate(move, *old_row, *old_col, *new_row, *new_col);
 	switch (move) {
 	case UP:
 		new_row = (old_row - 1) % R;
@@ -479,32 +298,13 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 #ifdef PKEY
 #ifdef PKEY_VEC
 	d_board[player] = vector<int>{new_row, new_col};
-	//d_board.insert(std::make_pair(player, vector<int>{new_row, new_col}));
 #else
 	d_board[player] = new_tile;
-	//d_board.insert(std::make_pair(player, new_tile));
 #endif
-#else
-	// Iterate over tiles
-	for (auto tile_iter = d_board.begin(); tile_iter != d_board.end(); ++tile_iter) {
-		// Iterate over player vector
-		if (tile_iter->first == old_tile) {
-			for (auto player_iter = tile_iter->second.begin(); player_iter != tile_iter->second.end(); ++player_iter) {
-				if (player_iter->getName() == playerName) {
-					tile_iter->second.erase(player_iter);
-				}
-			}
-		}
-
-		if (tile_iter->first == new_tile) {
-			tile_iter->second.push_back(player);
-		}
-	}
 #endif
 	int tmp_row = 0;
 	int tmp_col = 0;
 	getCoordinate(*new_tile, &tmp_row, &tmp_col);
-	cout << "New tile: " << *new_tile << "(" << new_tile << ";  " << &new_tile << ") - " << tmp_row << ", " << tmp_col << endl;
 	return *new_tile;
 }
 #endif
