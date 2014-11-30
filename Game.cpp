@@ -11,12 +11,27 @@
 
 template <const int N>
 bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
-	// TODO
 	try {
-		GameBoard<Tile, Player, N, N>::Move m = GameBoard<Tile, Player, N, N>::DOWN;
+		// TODO display player status
+
+		// Input move
+		//GameBoard<Tile, Player, N, N>::Move m = GameBoard<Tile, Player, N, N>::DOWN;
+		cout << "Please enter one of the following values:" << endl;
+		cout << "0(UP), 1(DOWN), 2(LEFT), 3(RIGHT)" << endl;
+		cin.exceptions(std::istream::failbit); 
+		int intM; cin >> intM;
+
+		// TODO there must be a better way
+		std::map<int, GameBoard<Tile, Player, N, N>::Move> map;
+		map[0] = GameBoard<Tile, Player, N, N>::UP;
+		map[1] = GameBoard<Tile, Player, N, N>::DOWN;
+		map[2] = GameBoard<Tile, Player, N, N>::LEFT;
+		map[3] = GameBoard<Tile, Player, N, N>::RIGHT;
+
+		GameBoard<Tile, Player, N, N>::Move m = map[intM];
 		cout << "Move = " << m << endl;
-		cin.exceptions(std::istream::failbit);
-		//cin >> m;
+
+		// Move player to tile
 		const Tile t = bg.move(m, pName);
 		cout << "Returned tile : " << t << " (" << &t << ")" << endl;
 
@@ -26,23 +41,33 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		Player p = bg.getPlayer(pName);
 		cout << p.getName() << endl;
 
-		vector<Player> opL = bg.getPlayers(t);
-		cout << opL.size() << endl;
-		for (auto x : opL) {
-			cout << x.getName() << endl;
-		}
-
+		// If player has food items
 		if (p.canAct()) {
+			// TODO display tile action
+
+			// If player chooses action
 			bool makeAction;
 			cin >> makeAction;
 			if (makeAction) {
-				/*
+				// TODO check if action is valid
+
+				// If tile has other players
 				vector<Player> opL = bg.getPlayers(t);
-				for (auto p : opL) {
-					cout << p.getName() << endl;
+				if (p.getGold() >= (int)opL.size()) {
+					p.eat();
+					for (auto op : opL) {
+						// Player pays other players
+						p.pay(op);
+						bg.setPlayer(op);
+					}
+					// Perform action
+					// TODO uncomment when fix 'action' error
+					//t.action(p);
+					bg.setPlayer(p);
 				}
-				*/
 			}
+
+			// TODO display player status
 		}
 
 		return true;
@@ -103,9 +128,10 @@ int main() {
 	// Iterate over players
 	for (auto pName : playerNames) {
 		do {
-			Player player = bg.getPlayer(pName);
-			cout << player.getName() << endl;
+			//Player player = bg.getPlayer(pName);
+			cout << pName << endl;
 		} while (! takeTurn<r>(bg, pName));
+		// If player won
 		if ( bg.win(pName) ) break;
 	}
 }

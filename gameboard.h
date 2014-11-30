@@ -232,17 +232,16 @@ void GameBoard<T, J, R, C>::setPlayers() {
 
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(int row, int col) const{
-	return *d_tiles[row][col];
+	return d_tiles[row][col];
 }
 
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::getCoordinate(const T &tile, int *row, int *col) const{
-	for (int r = 0; r < R /*d_tiles.size()*/; r++) {
-		for (int c = 0; c < C /*d_tiles[r].size()*/; c++) {
-			cout << *d_tiles[r][c] << "(" << d_tiles[r][c] << ") == " << tile << " (" << &tile << ")?" << endl;
+	for (int r = 0; r < R; r++) {
+		for (int c = 0; c < C; c++) {
+			//cout << *d_tiles[r][c] << "(" << d_tiles[r][c] << ") == " << tile << " (" << &tile << ")?" << endl;
 			if (*d_tiles[r][c] == tile) {
 				cout << "True" << endl;
-				// TODO test that this is copied correctly;
 				*row = r;
 				*col = c;
 				return;
@@ -251,6 +250,29 @@ void GameBoard<T, J, R, C>::getCoordinate(const T &tile, int *row, int *col) con
 	}
 }
 
+#ifdef PKEY
+template <class T, class J, const int R, const int C>
+void GameBoard<T, J, R, C>::setPlayer(J player){
+	// Iterate over players
+	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
+		J p = player_iter->first;
+		// If found player
+		if (p.getName() == player.getName()) {
+			// Update pointer
+#ifdef PKEY
+#ifdef PKEY_VEC
+			vector<int> tiles = player_iter->second;
+#else
+			T* tiles = player_iter->second;
+#endif
+#endif
+			d_board.erase(player_iter);
+			d_board[player] = tiles;
+			//*(player_iter->first) = &player;
+		}
+	}
+}
+#else
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::setPlayer(J player){
 	// Iterate over map
@@ -265,6 +287,7 @@ void GameBoard<T, J, R, C>::setPlayer(J player){
 		}
 	}
 }
+#endif
 
 #ifdef PKEY
 template <class T, class J, const int R, const int C>
