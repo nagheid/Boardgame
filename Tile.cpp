@@ -432,7 +432,6 @@ TileFactory::TileFactory(int _nTiles) : nTiles(_nTiles), max(_nTiles-1), tiles()
 	cout << "desetTilesToInsert=" << desetTilesToInsert << endl;
 
 	for (int i = 0; i < numberForEach; i++){
-#ifdef PTR
 		tiles.push_back(new Tile());
 		tiles.push_back(new RestaurantTile());
 		tiles.push_back(new SpiceMerchantTile());
@@ -447,30 +446,10 @@ TileFactory::TileFactory(int _nTiles) : nTiles(_nTiles), max(_nTiles-1), tiles()
 		tiles.push_back(new CasinoTile());
 		tiles.push_back(new GemMerchantTile());
 		tiles.push_back(new PalaceTile());
-#else
-		tiles.push_back(Tile());
-		tiles.push_back(RestaurantTile());
-		tiles.push_back(SpiceMerchantTile());
-		tiles.push_back(FabricManufacturesTile());
-		tiles.push_back(JewelerTile());
-		tiles.push_back(CartManufacturerTile());
-		tiles.push_back(SmallMarketTile());
-		tiles.push_back(SpiceMarketTile());
-		tiles.push_back(JelewryMarketTile());
-		tiles.push_back(FabricMarketTile());
-		tiles.push_back(BlackMarketTile());
-		tiles.push_back(CasinoTile());
-		tiles.push_back(GemMerchantTile());
-		tiles.push_back(PalaceTile());
-#endif
 	}
 
 	for (int i = 0; i < desetTilesToInsert; i++){
-#ifdef PTR
 		tiles.push_back(new Tile());
-#else
-		tiles.push_back(Tile());
-#endif
 	}
 
 	for (int i = 0; i < nTiles; i++){
@@ -492,21 +471,13 @@ Tile* TileFactory::next(){
 		int i = rand() % (max + 1);
 
 		// Get references to the tiles to switch
-#ifdef PTR
 		Tile& chosenTile = *tiles[i];
 		Tile& maxTile = *tiles[max];
 
-		// Swithc tiles
+		// Switch tiles
 		tiles[i] = &maxTile;
 		tiles[max] = &chosenTile;
-#else
-		Tile& chosenTile = tiles[i];
-		Tile& maxTile = tiles[max];
 
-		// Swithc tiles
-		tiles[i] = maxTile;
-		tiles[max] = chosenTile;
-#endif
 		// Decrement the size of remaining tiles
 		max--;
 
