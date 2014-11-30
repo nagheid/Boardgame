@@ -51,7 +51,11 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		// If player has food items
 		if (p.canAct()) {
 			// TODO display tile action
+			cout << tl.getName() << endl;
+			cout << tl.getDescription() << endl;
+			cout << endl;
 
+			cout << "Do action? 1 (True), 0 (false)" << endl;
 			// If player chooses action
 			bool makeAction;
 			cin >> makeAction;
