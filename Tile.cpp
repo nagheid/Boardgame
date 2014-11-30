@@ -15,7 +15,6 @@ Tile::Tile(int _actionCount) : actionCount(_actionCount), id(++ID) {}
 
 bool Tile::operator==(const Tile &t) const {
 	return this->id == t.id;
-	//return this == &t;
 }
 
 bool Tile::action(Player& player){
@@ -28,12 +27,12 @@ Tile* Tile::clone(){
 }
 
 ostream& operator<<(ostream& os, const Tile& tile){
-	os << tile.id << "," << tile.actionCount;
+	os << tile.id << "\t" << tile.actionCount;
 	return os;
 }
 
 istream& operator>>(istream& is, Tile& tile){
-	is >> tile.actionCount;
+	is >> tile.id >> tile.actionCount;
 	return is;
 }
 
@@ -367,6 +366,9 @@ Tile* PalaceTile::clone(){
 }
 
 
+// ----------------------------------------------------------------------------
+// Tile Factory
+// ----------------------------------------------------------------------------
 
 TileFactory* TileFactory::instance = 0;
 

@@ -12,7 +12,17 @@
 template <const int N>
 bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 	try {
-		// TODO display player status
+		// Display player status
+		Player p = bg.getPlayer(pName);
+		cout << p.getName() << endl;
+		cout << "Food: " << p.getFood() << endl;
+		cout << "Gold: " << p.getGold() << endl;
+		cout << "Fabric: " << p.getFabric() << endl;
+		cout << "Spices: " << p.getSpice() << endl;
+		cout << "Jeweles: " << p.getJewel() << endl;
+		cout << "Rubies: " << p.getRuby() << endl;
+		cout << "Space in cart: " << p.getCart() - p.totalGoods() << endl;
+		cout << endl;
 
 		// Input move
 		//GameBoard<Tile, Player, N, N>::Move m = GameBoard<Tile, Player, N, N>::DOWN;
@@ -37,9 +47,6 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 
 		Tile tl = bg.getTile(pName);
 		cout << "Get tile : " << tl << " (" << &tl << ")" << endl;
-
-		Player p = bg.getPlayer(pName);
-		cout << p.getName() << endl;
 
 		// If player has food items
 		if (p.canAct()) {
