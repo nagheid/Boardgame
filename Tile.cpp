@@ -20,7 +20,11 @@ bool Tile::operator==(const Tile &t) const {
 
 bool Tile::action(Player& player){
 	actionCount++;
-	return true;
+	return false;
+}
+
+bool Tile::actionValid(Player& player, int numOfOtherPlayers){
+	return false;
 }
 
 Tile* Tile::clone(){
@@ -55,6 +59,13 @@ bool RestaurantTile::action(Player& player){
     return true;
 }
 
+bool RestaurantTile::actionValid(Player& player, int numOfOtherPlayers){
+	if ((player.getGold() - numOfOtherPlayers) >= 2){
+		return true;
+	}
+	return false;
+}
+
 Tile* RestaurantTile::clone(){
 	return &RestaurantTile();
 }
@@ -84,6 +95,14 @@ bool SpiceMerchantTile::action(Player& player){
         return true;
     }
     return false;
+}
+
+bool SpiceMerchantTile::actionValid(Player& player, int numOfOtherPlayers){
+	int space = player.getCart() - player.totalGoods();
+	if ((player.getGold() - numOfOtherPlayers) >= 2 && space > 0){
+		return true;
+	}
+	return false;
 }
 
 Tile* SpiceMerchantTile::clone(){
@@ -118,6 +137,14 @@ bool FabricManufacturesTile::action(Player& player){
     return false;
 }
 
+bool FabricManufacturesTile::actionValid(Player& player, int numOfOtherPlayers){
+	int space = player.getCart() - player.totalGoods();
+	if ((player.getGold() - numOfOtherPlayers) >= 2 && space > 0){
+		return true;
+	}
+	return false;
+}
+
 Tile* FabricManufacturesTile::clone(){
 	return new FabricManufacturesTile(getActionCount());
 }
@@ -150,6 +177,14 @@ bool JewelerTile::action(Player& player){
     return false;
 }
 
+bool JewelerTile::actionValid(Player& player, int numOfOtherPlayers){
+	int space = player.getCart() - player.totalGoods();
+	if ((player.getGold() - numOfOtherPlayers) >= 2 && space > 0){
+		return true;
+	}
+	return false;
+}
+
 Tile* JewelerTile::clone(){
 	return new JewelerTile(getActionCount());
 }
@@ -172,6 +207,13 @@ bool CartManufacturerTile::action(Player& player){
         return true;
     }
     return false;
+}
+
+bool CartManufacturerTile::actionValid(Player& player, int numOfOtherPlayers){
+	if (player.getGold() >= (7 + numOfOtherPlayers)){
+		return true;
+	}
+	return false;
 }
 
 Tile* CartManufacturerTile::clone(){
@@ -202,6 +244,14 @@ bool SmallMarketTile::action(Player& player){
     return false;
 }
 
+bool SmallMarketTile::actionValid(Player& player, int numOfOtherPlayers){
+	if (player.getFabric() > 0 && player.getJewel() > 0 && player.getFabric() > 0
+			&& player.getGold() >= numOfOtherPlayers){
+		return true;
+	}
+	return false;
+}
+
 Tile* SmallMarketTile::clone(){
 	return new SmallMarketTile(getActionCount());
 }
@@ -222,6 +272,13 @@ bool SpiceMarketTile::action(Player& player){
         player.setGold(player.getGold() + 6);
 		return true;
     }
+	return false;
+}
+
+bool SpiceMarketTile::actionValid(Player& player, int numOfOtherPlayers){
+	if (player.getSpice() >= 3 && player.getGold() >= numOfOtherPlayers){
+		return true;
+	}
 	return false;
 }
 
@@ -249,6 +306,13 @@ bool JelewryMarketTile::action(Player& player){
 	return false;
 }
 
+bool JelewryMarketTile::actionValid(Player& player, int numOfOtherPlayers){
+	if (player.getJewel() >= 3 && player.getGold() >= numOfOtherPlayers){
+		return true;
+	}
+	return false;
+}
+
 Tile* JelewryMarketTile::clone(){
 	return new JelewryMarketTile(getActionCount());
 }
@@ -273,6 +337,13 @@ bool FabricMarketTile::action(Player& player){
 	return false;
 }
 
+bool FabricMarketTile::actionValid(Player& player, int numOfOtherPlayers){
+	if (player.getFabric() >= 3 && player.getGold() >= numOfOtherPlayers){
+		return true;
+	}
+	return false;
+}
+
 Tile* FabricMarketTile::clone(){
 	return new FabricMarketTile(getActionCount());
 }
@@ -290,6 +361,10 @@ BlackMarketTile::BlackMarketTile(int _actionCount) : Tile(_actionCount)  {
 }
 
 bool BlackMarketTile::action(Player& player){
+
+	if (player.getGold() < 1){
+		return false;
+	}
 
 	int numOfItems = rand() % 6;
 	int space = player.getCart() - player.totalGoods();
@@ -315,6 +390,13 @@ bool BlackMarketTile::action(Player& player){
 	}
 
 	return true;
+}
+
+bool BlackMarketTile::actionValid(Player& player, int numOfOtherPlayers){
+	if (player.getGold() >= (1+numOfOtherPlayers)){
+		return true;
+	}
+	return false;
 }
 
 Tile* BlackMarketTile::clone(){
@@ -358,6 +440,13 @@ bool CasinoTile::action(Player& player){
 	return true;
 }
 
+bool CasinoTile::actionValid(Player& player, int numOfOtherPlayers){
+	if (player.getGold() >= (1 + numOfOtherPlayers)){
+		return true;
+	}
+	return false;
+}
+
 Tile* CasinoTile::clone(){
 	return new CasinoTile(getActionCount());
 }
@@ -385,6 +474,14 @@ bool GemMerchantTile::action(Player& player) {
 	return false;
 }
 
+bool GemMerchantTile::actionValid(Player& player, int numOfOtherPlayers){
+	int nextSellPrice = 12 + getActionCount();
+	if (player.getGold() >= (nextSellPrice + numOfOtherPlayers)){
+		return true;
+	}
+	return false;
+}
+
 Tile* GemMerchantTile::clone(){
 	return new GemMerchantTile(getActionCount());
 }
@@ -407,6 +504,15 @@ bool PalaceTile::action(Player& player){
 		player.setJewel(player.getJewel() - 5);
 		player.setSpice(player.getSpice() - 5);
 		player.setRuby(player.getRuby() + 1);
+		return true;
+	}
+	return false;
+}
+
+bool PalaceTile::actionValid(Player& player, int numOfOtherPlayers){
+	int nextSellPrice = 12 + getActionCount();
+	if (player.getFabric() >= 5 && player.getJewel() >= 5 && player.getSpice() >= 5
+		&& player.getGold() >= numOfOtherPlayers){
 		return true;
 	}
 	return false;
