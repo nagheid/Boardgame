@@ -11,7 +11,7 @@ using namespace std;
 
 Tile::Tile(int _actionCount) : actionCount(_actionCount) {}
 
-bool Tile::operator==(const Tile &t){
+bool Tile::operator==(const Tile &t) const {
 	return this == &t;
 }
 
@@ -24,8 +24,9 @@ Tile* Tile::clone(){
 	return new Tile(getActionCount());
 }
 
-ostream& Tile::operator<<(ostream& os){
-	return os << actionCount;
+ostream& operator<<(ostream& os, const Tile& tile){
+	os << tile.actionCount;
+	return os;
 }
 
 istream& operator>>(istream& is, Tile& tile){
@@ -402,7 +403,7 @@ TileFactory* TileFactory::get(int _nTiles){
 	return instance;
 }
 
-Tile TileFactory::next(){
+Tile* TileFactory::next(){
 	if (instance && max >= 0){
 
 		// Get a random int within size of remaining tiles
@@ -419,7 +420,7 @@ Tile TileFactory::next(){
 		// Decrement the size of remaining tiles
 		max--;
 
-		return chosenTile;
+		return &chosenTile;
 	}
-	return NULL;
+	return nullptr;
 }

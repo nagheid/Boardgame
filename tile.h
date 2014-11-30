@@ -7,18 +7,23 @@
 
 using namespace std;
 
+class Tile;
+istream& operator>>(istream&, Tile&);
+ostream& operator<<(ostream&, const Tile&);
+
 class Tile {
 protected:
 	int actionCount;
 public:
 	Tile(int actionCount = 0);
-	bool operator==(const Tile &t);
+	bool operator==(const Tile &t) const;
 	virtual bool action(Player& player);
 	virtual Tile* clone();
-	ostream& operator<<(ostream& os);
 
 	int getActionCount(){ return actionCount; }
-	friend istream& operator>>(istream&, Tile& tile);
+
+	friend ostream& operator<<(ostream& os, const Tile& tile);
+	friend istream& operator>>(istream& is, Tile& tile);
 };
 
 class RestaurantTile : public Tile {
@@ -124,7 +129,7 @@ private:
 
 public:
 	static TileFactory* get(int _nTiles);
-	Tile next();
+	Tile* next();
 };
 
 #endif

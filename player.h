@@ -21,6 +21,8 @@ public:
 							fabric(1), jewel(1),
 							cart(9), food(10) {};
 
+	bool operator==(const Player& p);
+
 	/*
 	* Returns true if the player has food to act with. False if there is
 	* no food

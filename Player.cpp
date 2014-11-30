@@ -1,5 +1,10 @@
 #include "player.h"
 
+
+bool Player::operator==(const Player &p){
+	return this->name == p.name;
+}
+
 /*
 * Returns true if the player has food to act with. False if there is
 * no food
