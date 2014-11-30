@@ -1,5 +1,8 @@
 #include "player.h"
 
+/*
+ * Overloading operator== as Player is they key in the BoardGame hash map
+ */
 bool Player::operator==(const Player &p) const {
 	return this->name == p.name;
 }
@@ -8,7 +11,7 @@ bool Player::operator==(const Player &p) const {
 * Returns true if the player has food to act with. False if there is
 * no food
 */
-bool Player::canAct() const{
+bool Player::canAct() const {
 	return (food > 0);
 }
 
@@ -40,11 +43,33 @@ void Player::eat(){
 /*
 * Returns the total amount of goods in the player's posession
 */
-int Player::totalGoods(){
+int Player::totalGoods() const {
 	int num = 0;
 	num += getFabric();
 	num += getSpice();
 	num += getJewel();
 	num += getRuby();
 	return num;
+}
+
+/*
+* Overloading >> and << operators
+*/
+ostream& operator<<(ostream& os, const Player& player) {
+	os << player.getName() << "\t";
+	os << "Food: " << player.getFood() << "\t";
+	os << "Gold: " << player.getGold() << "\t";
+	os << "Fabric: " << player.getFabric() << "\t";
+	os << "Spices: " << player.getSpice() << "\t";
+	os << "Jeweles: " << player.getJewel() << "\t";
+	os << "Rubies: " << player.getRuby() << "\t";
+	os << "Space in cart: " << player.getCart() - player.totalGoods();
+	os << std::endl;
+	return os;
+}
+
+istream& operator>>(istream& is, Player& player) {
+	// TODO
+	is >> player.name >> player.food;
+	return is;
 }

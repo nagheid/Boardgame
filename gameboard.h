@@ -254,7 +254,7 @@ void GameBoard<T, J, R, C>::getCoordinate(const T &tile, int *row, int *col) con
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::setPlayer(J player){
 	// Iterate over players
-	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
+	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ) {
 		J p = player_iter->first;
 		// If found player
 		if (p.getName() == player.getName()) {
@@ -269,6 +269,9 @@ void GameBoard<T, J, R, C>::setPlayer(J player){
 			d_board.erase(player_iter);
 			d_board[player] = tiles;
 			//*(player_iter->first) = &player;
+			break;
+		} else {
+			player_iter++;
 		}
 	}
 }

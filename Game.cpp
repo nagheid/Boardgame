@@ -14,15 +14,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 	try {
 		// Display player status
 		Player p = bg.getPlayer(pName);
-		cout << p.getName() << endl;
-		cout << "Food: " << p.getFood() << endl;
-		cout << "Gold: " << p.getGold() << endl;
-		cout << "Fabric: " << p.getFabric() << endl;
-		cout << "Spices: " << p.getSpice() << endl;
-		cout << "Jeweles: " << p.getJewel() << endl;
-		cout << "Rubies: " << p.getRuby() << endl;
-		cout << "Space in cart: " << p.getCart() - p.totalGoods() << endl;
-		cout << endl;
+		cout << p << endl;
 
 		// Input move
 		//GameBoard<Tile, Player, N, N>::Move m = GameBoard<Tile, Player, N, N>::DOWN;
@@ -42,7 +34,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		cout << "Move = " << m << endl;
 
 		// Move player to tile
-		const Tile t = bg.move(m, pName);
+		Tile& t = (Tile&) bg.move(m, pName);
 		cout << "Returned tile : " << t << " (" << &t << ")" << endl;
 
 		Tile tl = bg.getTile(pName);
@@ -68,13 +60,13 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 						bg.setPlayer(op);
 					}
 					// Perform action
-					// TODO uncomment when fix 'action' error
-					//t.action(p);
+					t.action(p);
 					bg.setPlayer(p);
 				}
 			}
 
-			// TODO display player status
+			// Display player status
+			cout << p << endl;
 		}
 
 		return true;
