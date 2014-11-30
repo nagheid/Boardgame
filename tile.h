@@ -15,6 +15,8 @@ class Tile {
 protected:
 	int id;
 	int actionCount;
+	string description;
+	string name;
 public:
 	Tile(int actionCount = 0);
 	bool operator==(const Tile &t) const;
@@ -23,6 +25,8 @@ public:
 
 	int getActionCount(){ return actionCount; }
 	int getId(){ return id; }
+	string getDescription() { return description; }
+	string getName() { return name; }
 
 	friend ostream& operator<<(ostream& os, const Tile& tile);
 	friend istream& operator>>(istream& is, Tile& tile);
