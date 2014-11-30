@@ -13,6 +13,7 @@ ostream& operator<<(ostream&, const Tile&);
 
 class Tile {
 protected:
+	int id;
 	int actionCount;
 public:
 	Tile(int actionCount = 0);
@@ -21,6 +22,7 @@ public:
 	virtual Tile* clone();
 
 	int getActionCount(){ return actionCount; }
+	int getId(){ return id; }
 
 	friend ostream& operator<<(ostream& os, const Tile& tile);
 	friend istream& operator>>(istream& is, Tile& tile);

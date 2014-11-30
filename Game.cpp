@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string>
 #include <sstream>
+#include <istream>
+#include <iostream>
+#include <vector>
 
 #include "gameboard.h"
 #include "player.h"
@@ -9,6 +12,30 @@
 template <const int N>
 bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 	// TODO
+	try {
+		GameBoard<Tile, Player, N, N>::Move m = GameBoard<Tile, Player, N, N>::DOWN;
+		cout << "Move = " << m << endl;
+		cin.exceptions(std::istream::failbit);
+		//cin >> m;
+		const Tile t = bg.move(m, pName);
+
+		Player p = bg.getPlayer(pName);
+		if (p.canAct()) {
+			bool makeAction;
+			cin >> makeAction;
+			if (makeAction) {
+				//vector<Player> opL = bg.getPlayers(t);
+			}
+		}
+
+		return true;
+	} catch (std::istream::failure e) {
+		cout << "Incorrect key pressed";
+		cin.clear();
+	} catch (std::out_of_range e) {
+		cout << e.what();
+	}
+	
 	return false;
 }
 
@@ -28,7 +55,8 @@ int main() {
 	vector<string> playerNames;
 	std::cout << "Name rules" << std::endl;
 	std::cout << "1. no spaces in a player name, use '_'" << std::endl;
-	std::cout << "2. use a space to separate more than one player name\n" << std::endl;
+	std::cout << "2. use a space to separate more than one player name" << std::endl;
+	std::cout << "3. player names must be unique\n" << std::endl;
 	std::cout << "Please enter the player names separated by a space: " << std::endl;
 	std::cout << "Press enter when done" << std::endl;
 	string line, name;
@@ -55,14 +83,12 @@ int main() {
 
 	bg.setPlayers(); // playerNames);
 
-	///*
 	// Iterate over players
 	for (auto pName : playerNames) {
-		Player p(pName);
-		//do {
-		std::cout << pName; // bg.getPlayer(pName);
-		//} while (! takeTurn<r>(bg, pName));
-		//if ( bg.win(pName) ) break;
+		do {
+			Player player = bg.getPlayer(pName);
+			cout << player.getName() << endl;
+		} while (! takeTurn<r>(bg, pName));
+		if ( bg.win(pName) ) break;
 	}
-	//*/
 }

@@ -4,12 +4,14 @@
 
 using namespace std;
 
+static int ID = 0;
+
 // ----------------------------------------------------------------------------
 // Desert (Default Tile)
 // No action is possible on this tile. This is the base class behaviour
 // ----------------------------------------------------------------------------
 
-Tile::Tile(int _actionCount) : actionCount(_actionCount) {}
+Tile::Tile(int _actionCount) : actionCount(_actionCount), id(++ID) {}
 
 bool Tile::operator==(const Tile &t) const {
 	return this == &t;
@@ -25,7 +27,7 @@ Tile* Tile::clone(){
 }
 
 ostream& operator<<(ostream& os, const Tile& tile){
-	os << tile.actionCount;
+	os << tile.id << "," << tile.actionCount;
 	return os;
 }
 
