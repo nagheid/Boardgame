@@ -56,13 +56,13 @@ int Player::totalGoods() const {
 * Overloading >> and << operators
 */
 ostream& operator<<(ostream& os, const Player& player) {
-	os << player.getName() << "\t";
-	os << "Food: " << player.getFood() << "\t";
-	os << "Gold: " << player.getGold() << "\t";
-	os << "Fabric: " << player.getFabric() << "\t";
-	os << "Spices: " << player.getSpice() << "\t";
-	os << "Jeweles: " << player.getJewel() << "\t";
-	os << "Rubies: " << player.getRuby() << "\t";
+	os << "Player: " << player.getName() << "\t";
+	os << "Food: " << player.getFood() << "; ";
+	os << "Gold: " << player.getGold() << "; ";
+	os << "Fabric: " << player.getFabric() << "; ";
+	os << "Spices: " << player.getSpice() << "; ";
+	os << "Jeweles: " << player.getJewel() << "; ";
+	os << "Rubies: " << player.getRuby() << "; ";
 	os << "Space in cart: " << player.getCart() - player.totalGoods();
 	os << std::endl;
 	return os;

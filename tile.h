@@ -128,7 +128,11 @@ private:
 	static TileFactory* instance;
 	int nTiles;
 	int max;
+#ifdef PTR
+	vector<Tile *> tiles;
+#else
 	vector<Tile> tiles;
+#endif
 	TileFactory(int _nTiles);
 	TileFactory(TileFactory const&) {};
 	TileFactory& operator=(TileFactory const&){};

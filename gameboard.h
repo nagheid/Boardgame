@@ -232,7 +232,7 @@ void GameBoard<T, J, R, C>::setPlayers() {
 
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(int row, int col) const{
-	return d_tiles[row][col];
+	return *d_tiles[row][col];
 }
 
 template <class T, class J, const int R, const int C>

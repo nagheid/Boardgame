@@ -17,7 +17,6 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		cout << p << endl;
 
 		// Input move
-		//GameBoard<Tile, Player, N, N>::Move m = GameBoard<Tile, Player, N, N>::DOWN;
 		cout << "Please enter one of the following values:" << endl;
 		cout << "0(UP), 1(DOWN), 2(LEFT), 3(RIGHT)" << endl;
 		cin.exceptions(std::istream::failbit); 
@@ -37,14 +36,20 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		Tile& t = (Tile&) bg.move(m, pName);
 		cout << "Returned tile : " << t << " (" << &t << ")" << endl;
 
-		Tile tl = bg.getTile(pName);
-		cout << "Get tile : " << tl << " (" << &tl << ")" << endl;
+		// It seems the tiles are all desert
+		// Print all tiles
+		for (int i = 0; i < N; i++){
+			for (int j = 0; j < N; j++){
+				Tile& tx = (Tile&) bg.getTile(i, j);
+				cout << tx << endl;
+			}
+		}
 
 		// If player has food items
 		if (p.canAct()) {
-			// TODO display tile action
-			cout << tl.getName() << endl;
-			cout << tl.getDescription() << endl;
+			// Display tile action
+			cout << t.getName() << endl;
+			cout << t.getDescription() << endl;
 			cout << endl;
 
 			cout << "Do action? 1 (True), 0 (false)" << endl;
@@ -122,7 +127,9 @@ int main() {
 	TileFactory *tf = TileFactory::get(r*c);
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
-			bg.add(*(tf->next()), i, j);
+			Tile * tile = tf->next();
+			cout << "\n" << tile << endl;
+			bg.add(*tile, i, j);
 		}
 	}
 
@@ -131,8 +138,10 @@ int main() {
 	// Iterate over players
 	for (auto pName : playerNames) {
 		do {
-			//Player player = bg.getPlayer(pName);
-			cout << pName << endl;
+			cout << "====================================" << endl;
+			cout << endl;
+			cout << "Player " << pName << "'s turn" << endl;
+			cout << endl;
 		} while (! takeTurn<r>(bg, pName));
 		// If player won
 		if ( bg.win(pName) ) break;
