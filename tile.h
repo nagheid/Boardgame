@@ -137,3 +137,5 @@ public:
 	static TileFactory* get(int _nTiles);
 	Tile* next();
 };
+
+#endif

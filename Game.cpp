@@ -32,18 +32,11 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		GameBoard<Tile, Player, N, N>::Move m = map[intM];
 		cout << "Move = " << m << endl;
 
+		// TODO check if move is valid
+
 		// Move player to tile
 		Tile& t = (Tile&) bg.move(m, pName);
 		cout << "Returned tile : " << t << " (" << &t << ")" << endl;
-
-		// It seems the tiles are all desert
-		// Print all tiles
-		for (int i = 0; i < N; i++){
-			for (int j = 0; j < N; j++){
-				Tile& tx = (Tile&) bg.getTile(i, j);
-				cout << tx << endl;
-			}
-		}
 
 		// If player has food items
 		if (p.canAct()) {
