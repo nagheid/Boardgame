@@ -112,6 +112,7 @@ public:
 
 	bool win(const string& playerName);
 
+	bool moveValid(Move move, const string& playerName);
 	const T& move(Move move, const string& playerName);
 
 };
@@ -425,6 +426,12 @@ bool GameBoard<T, J, R, C>::win(const string& playerName){
 	return result;
 }
 #endif
+
+template <class T, class J, const int R, const int C>
+bool GameBoard<T, J, R, C>::moveValid(Move move, const string& playerName){
+	// TODO 
+	return true;
+}
 
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){

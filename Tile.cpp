@@ -557,10 +557,6 @@ TileFactory::TileFactory(int _nTiles) : nTiles(_nTiles), max(_nTiles-1), tiles()
 	for (int i = 0; i < desetTilesToInsert; i++){
 		tiles.push_back(new Tile());
 	}
-
-	for (int i = 0; i < nTiles; i++){
-		cout << tiles[i] << "\t" << endl;
-	}
 }
 
 TileFactory* TileFactory::get(int _nTiles){
