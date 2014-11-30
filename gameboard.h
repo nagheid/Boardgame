@@ -16,7 +16,7 @@ using std::unordered_map;
 using std::vector;
 
 #define PKEY
-//#define PKEY_VEC
+#define PKEY_VEC
 //#define TKEY
 //#define TKEY_PTR
 //#define TKEY_ADD
@@ -239,10 +239,13 @@ template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::getCoordinate(const T &tile, int *row, int *col) const{
 	for (int r = 0; r < R /*d_tiles.size()*/; r++) {
 		for (int c = 0; c < C /*d_tiles[r].size()*/; c++) {
+			cout << *d_tiles[r][c] << "(" << d_tiles[r][c] << ") == " << tile << " (" << &tile << ")?" << endl;
 			if (*d_tiles[r][c] == tile) {
+				cout << "True" << endl;
 				// TODO test that this is copied correctly;
 				*row = r;
 				*col = c;
+				return;
 			}
 		}
 	}
@@ -307,7 +310,7 @@ const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
 			cout << "[" << vec[0] << "," << vec[1] << "]" << endl;
 			return *d_tiles[vec[0]][vec[1]];
 #else
-			cout << player_iter->second << endl;
+			cout << *(player_iter->second) << endl;
 			return *(player_iter->second);
 #endif
 		}
@@ -338,19 +341,26 @@ const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
 #ifdef PKEY
 template <class T, class J, const int R, const int C>
 vector<J> GameBoard<T, J, R, C>::getPlayers(const T& tile) const{
+	int tmp_row = 0;
+	int tmp_col = 0;
+	getCoordinate(tile, &tmp_row, &tmp_col);
+	cout << "Input tile: " << tile << "(" << &tile << ") - " << tmp_row << ", " << tmp_col << endl;
+
 	vector<J> players;
 	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
 #ifdef PKEY_VEC
 		vector<int> vec = player_iter->second;
-		if (d_tiles[vec[0]][vec[1]] == tile) {
+		if (*d_tiles[vec[0]][vec[1]] == tile) {
 #else
-		if (player_iter->second == tile) {
+		T t = *(player_iter->second);
+		cout << t << endl;
+		if (t == tile) {
 #endif
 			J player = player_iter->first;
 			players.push_back(player);
 		}
 	}
-	return players
+	return players;
 }
 #else
 template <class T, class J, const int R, const int C>
@@ -405,6 +415,7 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 	int old_row = 0;
 	int old_col = 0;
 	getCoordinate(old_tile, &old_row, &old_col);
+	cout << "Old tile: " << old_tile << "(" << old_tile << ";  " << &old_tile << ") - " << old_row << ", " << old_col << endl;
 
 	// Figure out which tile to move player to
 	int new_row = 0;
@@ -434,9 +445,11 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 	J player = getPlayer(playerName);
 #ifdef PKEY
 #ifdef PKEY_VEC
-	d_board.insert(std::make_pair(player, vector<int>{new_row, new_col}));
+	d_board[player] = vector<int>{new_row, new_col};
+	//d_board.insert(std::make_pair(player, vector<int>{new_row, new_col}));
 #else
-	d_board.insert(std::make_pair(player, new_tile));
+	d_board[player] = new_tile;
+	//d_board.insert(std::make_pair(player, new_tile));
 #endif
 #else
 	// Iterate over tiles
@@ -455,11 +468,10 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 		}
 	}
 #endif
-	cout << &new_tile << endl;
 	int tmp_row = 0;
 	int tmp_col = 0;
 	getCoordinate(*new_tile, &tmp_row, &tmp_col);
-	cout << tmp_row << ", " << tmp_col << endl;
+	cout << "New tile: " << *new_tile << "(" << new_tile << ";  " << &new_tile << ") - " << tmp_row << ", " << tmp_col << endl;
 	return *new_tile;
 }
 #endif

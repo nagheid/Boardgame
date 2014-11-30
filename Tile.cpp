@@ -14,7 +14,8 @@ static int ID = 0;
 Tile::Tile(int _actionCount) : actionCount(_actionCount), id(++ID) {}
 
 bool Tile::operator==(const Tile &t) const {
-	return this == &t;
+	return this->id == t.id;
+	//return this == &t;
 }
 
 bool Tile::action(Player& player){

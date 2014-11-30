@@ -18,13 +18,30 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		cin.exceptions(std::istream::failbit);
 		//cin >> m;
 		const Tile t = bg.move(m, pName);
+		cout << "Returned tile : " << t << " (" << &t << ")" << endl;
+
+		Tile tl = bg.getTile(pName);
+		cout << "Get tile : " << tl << " (" << &tl << ")" << endl;
 
 		Player p = bg.getPlayer(pName);
+		cout << p.getName() << endl;
+
+		vector<Player> opL = bg.getPlayers(t);
+		cout << opL.size() << endl;
+		for (auto x : opL) {
+			cout << x.getName() << endl;
+		}
+
 		if (p.canAct()) {
 			bool makeAction;
 			cin >> makeAction;
 			if (makeAction) {
-				//vector<Player> opL = bg.getPlayers(t);
+				/*
+				vector<Player> opL = bg.getPlayers(t);
+				for (auto p : opL) {
+					cout << p.getName() << endl;
+				}
+				*/
 			}
 		}
 
