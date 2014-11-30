@@ -45,6 +45,14 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 			cout << t.getDescription() << endl;
 			cout << endl;
 
+			if (!t.actionValid(p, bg.getPlayers(t).size())){
+				cout << "Connot act on tile." << endl;
+				cout << "Please any key to continue" << endl;
+				string placeholder;
+				cin >> placeholder;
+				return false;
+			}
+
 			cout << "Do action? 1 (True), 0 (false)" << endl;
 			// If player chooses action
 			bool makeAction;
