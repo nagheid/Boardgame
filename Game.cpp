@@ -56,9 +56,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 			bool makeAction = false;
 			if (!t.actionValid(p, otherPlayers.size() - 1)){
 				cout << "Cannot act on tile." << endl;
-				cout << "Please press any key to continue" << endl;
-				string placeholder;
-				cin >> placeholder;
+				system("pause");
 				validAction = false;
 				//return false; // true
 			}
