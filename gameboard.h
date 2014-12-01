@@ -422,10 +422,6 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 		std::istringstream sLine2(line);
 		sLine2 >> tile;
 
-		cout << "Read as: " << line << endl;
-		cout << "Copy as: " << tile << endl;
-		cout << "i = " << i << "; j = " << j << endl;
-
 #ifdef PKEY_VEC
 		gameboard.d_tiles[i][j] = vector<int>{i, j}
 #else
@@ -439,12 +435,6 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 			// Next row
 			i = 0;
 			j++;
-		}
-	}
-
-	for (auto tx : gameboard.d_tiles) {
-		for (auto ty : tx) {
-			cout << *ty;
 		}
 	}
 

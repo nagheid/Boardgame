@@ -70,18 +70,26 @@ ostream& operator<<(ostream& os, const Player& player) {
 
 istream& operator>>(istream& is, Player& player) {
 	// Read all player data
-	string line;
-	getline(is, line);
+	string line; getline(is, line);
 	std::istringstream streamLine(line);
 
+	std::vector<string> tokens;
+	copy(std::istream_iterator<std::string>(streamLine),
+		std::istream_iterator<std::string>(),
+		std::back_inserter(tokens));
+
+	// TODO find a better way to do this
 	// Separate into tokens and ignore every other token
-	string token;
-	streamLine >> token >> player.name;
-	streamLine >> token >> player.food;
-	streamLine >> token >> player.gold;
-	streamLine >> token >> player.fabric;
-	streamLine >> token >> player.spice;
-	streamLine >> token >> player.jewel;
-	streamLine >> token >> player.ruby;
+	player.name = tokens[1];
+	player.food = std::stoi(tokens[3]);
+	player.gold = std::stoi(tokens[5]);
+	player.fabric = std::stoi(tokens[7]);
+	player.spice = std::stoi(tokens[9]);
+	player.jewel = std::stoi(tokens[11]);
+	player.ruby = std::stoi(tokens[13]);
+
+	std::cout << "Copied ";
+	std::cout << player << std::endl;
+
 	return is;
 }
