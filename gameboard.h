@@ -5,21 +5,22 @@
 #include <functional>
 #include <istream>
 #include <iostream>
-#include <map>
 #include <ostream>
 #include <unordered_map>
 #include <vector>
 #include <fstream>
+#include <sstream>
 
-using std::map;
 using std::string;
 using std::unordered_map;
 using std::vector;
 using std::istream;
 using std::ostream;
+using std::cout;
+using std::endl;
 
 #define PKEY
-#define PKEY_VEC
+//#define PKEY_VEC
 
 template <class T, class J, const int R, const int C>
 class GameBoard;
@@ -343,6 +344,7 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 template <class T, class J, const int R, const int C>
 inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) {
 	// Iterate over players
+	os << "Occupied tiles:" << endl;
 	for (auto player_iter = gameboard.d_board.begin(); player_iter != gameboard.d_board.end(); ++player_iter) {
 		J player = player_iter->first;
 #ifdef PKEY_VEC
@@ -356,6 +358,16 @@ inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) 
 		os << "Is on tile:" << endl;
 		os << tile; /* << "\t(" << tilePtr << ")" */
 	}
+
+	os << endl;
+	
+	os << "All tiles:" << endl;
+	for (auto tx : gameboard.d_tiles) {
+		for (auto ty : tx) {
+			os << *ty;
+		}
+	}
+
 	return os;
 }
 
@@ -365,23 +377,77 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 	//cout << "Read from txt:" << endl;
 	//std::filebuf* pbuf = is.rdbuf();
 	///*
+	
+	// Fill d_board map
 	string line;
+	std::istringstream sLine(line);
 	while (getline(is, line)) {
-		// 3 lines per player;
 		cout << line << endl;
-		getline(is, line);
-		cout << line << endl;
-		getline(is, line);
-		cout << line << endl;
-		cout << "XXX" << endl;
-	}
-	//*/
+		// Ignore this line
+		if (line.find("Occupied") != std::string::npos) {
+			continue;
+		}
+		// 3 lines per player
+		if (line.find("Player:") != std::string::npos){
+			// Player line
+			J player("NA");
+			//sLine.str(line);
+			std::istringstream sLine2(line);
+			sLine2 >> player;
 
-	for (auto t1 : gameboard.d_tiles) {
-		for (auto t2 : t1) {
-			is >> *t2;
+			// Ignore this line (just says "is on tile")
+			getline(is, line);
+
+			// Tile line
+			T tile;
+			getline(is, line);
+			std::istringstream sLine3(line);
+			//sLine3.str(line);
+			sLine3 >> tile;
+
+			// Update d_board map
+			gameboard.d_board[player] = &tile;
+		} 
+		if (line.find("All tiles") != std::string::npos) {
+			break;
 		}
 	}
+	
+	// Fill d_tiles
+	int i = 0;
+	int j = 0;
+	while (getline(is, line)) {
+		T tile; 
+		//sLine.str(line);
+		std::istringstream sLine2(line);
+		sLine2 >> tile;
+
+		cout << "Read as: " << line << endl;
+		cout << "Copy as: " << tile << endl;
+		cout << "i = " << i << "; j = " << j << endl;
+
+#ifdef PKEY_VEC
+		gameboard.d_tiles[i][j] = vector<int>{i, j}
+#else
+		gameboard.d_tiles[i][j] = &tile;
+#endif
+
+		if (i < C-1) {
+			// Next col
+			i++;
+		} else {
+			// Next row
+			i = 0;
+			j++;
+		}
+	}
+
+	for (auto tx : gameboard.d_tiles) {
+		for (auto ty : tx) {
+			cout << *ty;
+		}
+	}
+
 	//is >> gameboard.d_board;
 	return is;
 }

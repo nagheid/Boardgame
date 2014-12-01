@@ -5,6 +5,7 @@
 #include <istream>
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "gameboard.h"
 #include "player.h"
@@ -37,6 +38,7 @@ bool load(GameBoard<Tile, Player, N, N> &bg) {
 		ss >> bg;
 		*/
 		ifs >> bg;
+		cout << bg;
 		return true;
 	} else {
 		return false;

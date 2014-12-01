@@ -57,19 +57,31 @@ int Player::totalGoods() const {
 */
 ostream& operator<<(ostream& os, const Player& player) {
 	os << "Player: " << player.getName() << "\t";
-	os << "Food: " << player.getFood() << "; ";
-	os << "Gold: " << player.getGold() << "; ";
-	os << "Fabric: " << player.getFabric() << "; ";
-	os << "Spices: " << player.getSpice() << "; ";
-	os << "Jeweles: " << player.getJewel() << "; ";
-	os << "Rubies: " << player.getRuby() << "; ";
+	os << "Food: " << player.getFood() << "\t";
+	os << "Gold: " << player.getGold() << "\t";
+	os << "Fabric: " << player.getFabric() << "\t";
+	os << "Spices: " << player.getSpice() << "\t";
+	os << "Jeweles: " << player.getJewel() << "\t";
+	os << "Rubies: " << player.getRuby() << "\t";
 	os << "Space in cart: " << player.getCart() - player.totalGoods();
 	os << std::endl;
 	return os;
 }
 
 istream& operator>>(istream& is, Player& player) {
-	// TODO
-	is >> player.name >> player.food;
+	// Read all player data
+	string line;
+	getline(is, line);
+	std::istringstream streamLine(line);
+
+	// Separate into tokens and ignore every other token
+	string token;
+	streamLine >> token >> player.name;
+	streamLine >> token >> player.food;
+	streamLine >> token >> player.gold;
+	streamLine >> token >> player.fabric;
+	streamLine >> token >> player.spice;
+	streamLine >> token >> player.jewel;
+	streamLine >> token >> player.ruby;
 	return is;
 }

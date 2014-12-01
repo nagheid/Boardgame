@@ -37,7 +37,23 @@ ostream& operator<<(ostream& os, const Tile& tile){
 }
 
 istream& operator>>(istream& is, Tile& tile){
-	is >> tile.id >> tile.actionCount;
+	// Store stream into tokens vector
+	string line, token;	getline(is, line);
+	std::istringstream streamLine(line);
+	vector<string> tokens;
+	copy(istream_iterator<string>(streamLine),
+		istream_iterator<string>(),
+		back_inserter(tokens));
+
+	// Parse the tokens
+	tile.id = std::stoi(tokens[0]);
+	tile.actionCount = std::stoi(tokens[tokens.size() - 1]);
+	string name;
+	for (int i = 1; i < tokens.size() - 1; i++) {
+		name += tokens[i];
+	}
+	tile.name = name;
+
 	return is;
 }
 
