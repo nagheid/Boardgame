@@ -36,7 +36,7 @@ ostream& operator<<(ostream& os, const Tile& tile){
 	return os;
 }
 
-Tile * createTile(/*Tile * tile, */string name) {
+Tile* Tile::createTile(/*Tile * tile, */string name) {
 	if (name.find("BlackMarket") != std::string::npos) {
 		//tile = new BlackMarketTile();
 		//return new BlackMarketTile();
@@ -125,8 +125,9 @@ istream& operator>>(istream& is, Tile& tile){
 	//tile.name = name;
 
 	// Create derived tile
-	Tile * t = createTile(/*&tile,*/ name);
-	tile = *t;
+	Tile * t = Tile::createTile(/*&tile,*/ name);
+	//tile = (Tile&)t;
+	tile = (Tile&)*t;
 	tile.id = id;
 	tile.actionCount = actionCount;
 	//tile.name = name;

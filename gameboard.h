@@ -374,6 +374,91 @@ inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) 
 	return os;
 }
 
+/*
+Tile * createTile(string name) {
+	if (name.find("BlackMarket") != std::string::npos) {
+		//tile = new BlackMarketTile();
+		//return new BlackMarketTile();
+		BlackMarketTile * t = new BlackMarketTile();
+		return t;
+	}
+	else if (name.find("CartManufacturer") != std::string::npos) {
+		//tile = 
+		//return new CartManufacturerTile();
+		CartManufacturerTile * t = new CartManufacturerTile();
+		return t;
+	}
+	else if (name.find("Casino") != std::string::npos) {
+		//tile = 
+		//return new CasinoTile();
+		CasinoTile * t = new CasinoTile();
+		return t;
+	}
+	else if (name.find("FabricManufactures") != std::string::npos) {
+		//tile = 
+		//return new FabricManufacturesTile();
+		FabricManufacturesTile * t = new FabricManufacturesTile();
+		return t;
+	}
+	else if (name.find("FabricMarket") != std::string::npos) {
+		//tile = 
+		//return new FabricMarketTile();
+		FabricMarketTile * t = new FabricMarketTile();
+		return t;
+	}
+	else if (name.find("GemMerchant") != std::string::npos) {
+		//tile = 
+		//return new GemMerchantTile();
+		GemMerchantTile * t = new GemMerchantTile();
+		return t;
+	}
+	else if (name.find("JelewryMarket") != std::string::npos) {
+		//tile = 
+		//return new JelewryMarketTile();
+		JelewryMarketTile * t = new JelewryMarketTile();
+		return t;
+	}
+	else if (name.find("Jeweler") != std::string::npos) {
+		//tile = 
+		return new JewelerTile();
+	}
+	else if (name.find("Palace") != std::string::npos) {
+		//tile = 
+		//return new PalaceTile();
+		PalaceTile * t = new PalaceTile();
+		return t;
+	}
+	else if (name.find("Restaurant") != std::string::npos) {
+		//tile = 
+		//return new RestaurantTile();
+		RestaurantTile * t = new RestaurantTile();
+		return t;
+	}
+	else if (name.find("SmallMarket") != std::string::npos) {
+		//tile = 
+		//return new SmallMarketTile();
+		SmallMarketTile * t = new SmallMarketTile();
+		return t;
+	}
+	else if (name.find("SpiceMarket") != std::string::npos) {
+		//tile = 
+		//return new SpiceMarketTile();
+		SpiceMarketTile * t = new SpiceMarketTile();
+		return t;
+	}
+	else if (name.find("SpiceMerchant") != std::string::npos) {
+		//tile = 
+		//return new SpiceMerchantTile();
+		SpiceMerchantTile * t = new SpiceMerchantTile();
+		return t;
+	}
+	else {
+		//tile = 
+		return new Tile();
+	}
+}
+*/
+
 template <class T, class J, const int R, const int C>
 inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 	string line;
@@ -390,19 +475,35 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 		if (line.find("Occupied") != std::string::npos) {
 			break;
 		}
+		std::istringstream sLine2(line);
 
+		// Parse name
+		vector<string> tokens;
+		copy(istream_iterator<string>(sLine2),
+			istream_iterator<string>(),
+			back_inserter(tokens));
+		string tilename;
+		for (int x = 1; x < tokens.size() - 1; x++) {
+			tilename += tokens[x];
+		}
+
+		// Create tile
 		//T& tile = Tile();
 		//T * tile = NULL; // = new Tile();
-		T tile;
+		//T tile;
 		//T * t = new Tile();
 		//T& tile = *t;
 
+		T * tile = T::createTile(tilename);
+
 		//sLine.str(line);
-		std::istringstream sLine2(line);
-		sLine2 >> tile;
+		std::istringstream sLineT(line);
+		sLineT >> *tile;
 
 		// Dereferencing fixed load 
-		*(gameboard.d_tiles[i][j]) = tile;
+		gameboard.d_tiles[i][j] = tile;
+		//*(gameboard.d_tiles[i][j]) = (T&)*tile;
+		//*(gameboard.d_tiles[i][j]) = tile;
 		//*(gameboard.d_tiles[i][j]) = (T&) tile;
 		//&(gameboard.d_tiles[i][j]) = tile;
 		//gameboard.d_tiles[i][j] = (T*)&tile;

@@ -31,6 +31,8 @@ public:
 
 	friend ostream& operator<<(ostream& os, const Tile& tile);
 	friend istream& operator>>(istream& is, Tile& tile);
+
+	static Tile* createTile(string name);
 };
 
 class RestaurantTile : public Tile {
