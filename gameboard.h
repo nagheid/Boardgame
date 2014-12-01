@@ -3,20 +3,29 @@
 
 #include <cstdlib>
 #include <functional>
+#include <istream>
 #include <iostream>
 #include <map>
+#include <ostream>
 #include <unordered_map>
 #include <vector>
-
-#include "tile.h"
 
 using std::map;
 using std::string;
 using std::unordered_map;
 using std::vector;
+using std::istream;
+using std::ostream;
 
 #define PKEY
 #define PKEY_VEC
+
+template <class T, class J, const int R, const int C>
+class GameBoard;
+template <class T, class J, const int R, const int C>
+inline ostream& operator<< (ostream&, const GameBoard<T,J,R,C> &);
+template <class T, class J, const int R, const int C>
+istream& operator>> (istream&, GameBoard<T, J, R, C> &);
 
 template<class J>
 struct PlayerHashFunction {
@@ -47,7 +56,6 @@ class GameBoard {
 	unordered_map<J, T*, PlayerHashFunction<J>> d_board;
 #endif
 #endif
-
 
 public:
 	enum Move {
@@ -82,6 +90,30 @@ public:
 
 	bool moveValid(Move move, const string& playerName);
 	const T& move(Move move, const string& playerName);
+
+	/*
+	 * Overloading >> and << operators for save and load feature
+	 */
+	inline friend ostream& operator<<(ostream& os, const GameBoard& gameboard) {
+		// TODO
+		// Iterate over players
+		for (auto player_iter = gameboard.d_board.begin(); player_iter != gameboard.d_board.end(); ++player_iter) {
+			J player = player_iter->first;
+#ifdef PKEY_VEC
+			vector<int> vec = player_iter->second;
+			T tile = *(gameboard.d_tiles[vec[0]][vec[1]]);
+			T * tilePtr = gameboard.d_tiles[vec[0]][vec[1]];
+#else
+			T tile = *(player_iter->second);
+#endif
+			os << player;
+			os << "Is on tile: ";
+			os << tile << "(" << &tilePtr << ")" << endl;
+		}
+		return os;
+	};
+
+	friend istream& operator>>(istream& is, GameBoard& gameboard);
 
 };
 
@@ -196,7 +228,7 @@ J GameBoard<T, J, R, C>::getPlayer(const string& playerName){
 
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
-	// Iterate over tiles
+	// Iterate over players
 	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
 		J player = player_iter->first;
 		if (player.getName() == playerName) {
@@ -204,7 +236,6 @@ const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
 			vector<int> vec = player_iter->second;
 			return *d_tiles[vec[0]][vec[1]];
 #else
-			cout << *(player_iter->second) << endl;
 			return *(player_iter->second);
 #endif
 		}
@@ -307,4 +338,31 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 	getCoordinate(*new_tile, &tmp_row, &tmp_col);
 	return *new_tile;
 }
+
+
+template <class T, class J, const int R, const int C>
+inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) {
+	// TODO
+	// Iterate over players
+	for (auto player_iter = gameboard.d_board.begin(); player_iter != gameboard.d_board.end(); ++player_iter) {
+		J player = player_iter->first;
+#ifdef PKEY_VEC
+		vector<int> vec = player_iter->second;
+		T tile = *(gameboard.d_tiles[vec[0]][vec[1]]);
+#else
+		T tile = *(player_iter->second);
+#endif
+		os << player << endl;
+		os << " is on tile: ";
+		os << tile;
+	}
+	return os;
+}
+
+template <class T, class J, const int R, const int C>
+istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
+	// TODO
+	return is;
+}
+
 #endif

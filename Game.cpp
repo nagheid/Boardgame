@@ -35,7 +35,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 
 		// Move player to tile
 		Tile& old_tile = (Tile&)bg.getTile(pName);
-		cout << "Player was on tile:\t" << old_tile << endl; 
+		cout << "Player was on tile:\t" << old_tile << endl;
 
 		Tile& t = (Tile&)bg.move(m, pName);
 		cout << "Player is now on tile:\t" << t << endl;
@@ -129,14 +129,17 @@ int main() {
 	GameBoard<Tile, Player, r, c> bg(playerNames);
 
 	// Initialize tiles
+	cout << "The board contains the following tiles:" << endl;
 	TileFactory *tf = TileFactory::get(r*c);
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
 			Tile * tile = tf->next();
-			cout << "\n" << tile << endl;
+			cout << *tile << "(" << &tile << ")" << endl;
 			bg.add(*tile, i, j);
 		}
 	}
+	cout << bg << endl;
+	cout << endl;
 
 	// PLAY THE GAME //
 	bg.setPlayers();
@@ -144,11 +147,14 @@ int main() {
 	// Iterate over players
 	for (auto pName : playerNames) {
 		do {
+			cout << bg << endl;
 			cout << "====================================" << endl;
 			cout << endl;
 			cout << "Player " << pName << "'s turn" << endl;
 			cout << endl;
-		} while (! takeTurn<r>(bg, pName));
+			cout << bg << endl;
+		}	// Keep playing if takeTurn returns false
+		while (! takeTurn<r>(bg, pName));
 		// If player won
 		if ( bg.win(pName) ) break;
 	}
