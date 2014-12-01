@@ -146,18 +146,26 @@ int main() {
 	// PLAY THE GAME //
 	bg.setPlayers();
 
-	// Iterate over players
-	for (auto pName : playerNames) {
-		do {
-			cout << endl; 
-			cout << "====================================" << endl;
-			cout << bg << endl;
-			cout << endl;
-			cout << "Player " << pName << "'s turn" << endl;
-			cout << endl;
-		}	// Keep playing if takeTurn returns false
-		while (! takeTurn<r>(bg, pName));
-		// If player won
-		if ( bg.win(pName) ) break;
+	bool isWinner = false;
+
+	while (!isWinner){
+		// Iterate over players
+		for (auto pName : playerNames) {
+			do {
+				cout << endl; 
+				cout << "====================================" << endl;
+				cout << bg << endl;
+				cout << endl;
+				cout << "Player " << pName << "'s turn" << endl;
+				cout << endl;
+			}	// Keep playing if takeTurn returns false
+			while (! takeTurn<r>(bg, pName));
+			// If player won
+			if (bg.win(pName)){
+				cout << pName << " WINS!" << endl;
+				isWinner = true;
+				break;
+			}
+		}
 	}
 }
