@@ -81,6 +81,7 @@ public:
 
 	const T& getTile(const string& playerName) const;
 
+	vector<string> getPlayerNames() const;
 	vector<J> getPlayers(const T& tile) const;
 
 	void setPlayers();
@@ -104,7 +105,15 @@ public:
 
 template <class T, class J, const int R, const int C>
 GameBoard<T, J, R, C>::GameBoard() {
-
+	// Initialize empty tile vector
+	for (int i = 0; i < R; i++)	{
+		for (int j = 0; j < C; j++)	{
+#ifdef PKEY
+			d_tiles.push_back(vector <T*>());
+			d_tiles[i].push_back(new T());
+#endif
+		}
+	}
 }
 
 template <class T, class J, const int R, const int C>
@@ -135,10 +144,7 @@ GameBoard<T, J, R, C>::GameBoard(vector<string> _playerNames) {
 
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::add(const T& tile, int row, int col){
-	// The value in d_tiles is the address of the tile
-	/*
-	*d_tiles[row][col] = tile;
-	*/
+	// The value in d_tiles is a pointer to the tile
 	d_tiles[row][col] = (T*) &tile;
 	T * tilePtr = d_tiles[row][col];
 	cout << tile << "\t(" << tilePtr << ")" << endl;
@@ -159,6 +165,23 @@ void GameBoard<T, J, R, C>::setPlayers() {
 	}
 }
 
+template <class T, class J, const int R, const int C>
+void GameBoard<T, J, R, C>::setPlayers(vector<string> playerNames) {
+	// Initialize players
+	for (auto name : playerNames) {
+		J player = J(name);
+		d_players.push_back(player);
+#ifdef PKEY
+#ifdef PKEY_VEC
+		d_board[player] = vector<int>(2);
+#else
+		d_board[player] = new T();
+#endif
+#endif
+	}
+
+	setPlayers();
+}
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(int row, int col) const{
 	return *d_tiles[row][col];
@@ -231,6 +254,16 @@ const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
 	}
 	//return tile;
 	return NULL;
+}
+
+template <class T, class J, const int R, const int C>
+vector<string> GameBoard<T, J, R, C>::getPlayerNames() const {
+	vector<string> playerNames;
+	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
+		J player = player_iter->first;
+		playerNames.push_back(player.getName());
+	}
+	return playerNames;
 }
 
 template <class T, class J, const int R, const int C>

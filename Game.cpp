@@ -16,9 +16,11 @@ using std::cerr;
 // save
 // ----------------------------------------------------------------------------
 template <const int N>
-bool save(GameBoard<Tile, Player, N, N> &bg) {
-	ofstream ofs("boardgame.ros", ios::binary);
-	ofs.write((GameBoard<Tile,Player,N,N> *)&bg, sizeof(gb));
+void save(GameBoard<Tile, Player, N, N> &bg) {
+	ofstream ofs("boardgame.txt", ios::binary);
+	//ofs.write((char *)bg, sizeof(bg));
+	ofs << bg;
+	ofs.close();
 }
 
 // ----------------------------------------------------------------------------
@@ -26,9 +28,16 @@ bool save(GameBoard<Tile, Player, N, N> &bg) {
 // ----------------------------------------------------------------------------
 template <const int N>
 bool load(GameBoard<Tile, Player, N, N> &bg) {
-	ofstream ifs("fifthgrade.ros", ios::binary);
-	ifs.read((GameBoard<Tile, Player, N, N> *)&bg, sizeof(gb));
-}
+	ifstream ifs("boardgame.txt", ios::binary);
+	if (ifs) {
+		ifs >> bg;
+		cout << bg << endl;
+		return true;
+	} else {
+		return false;
+	}
+	//ifs.read((char*)&bg, sizeof(bg));
+} 
 
 // ----------------------------------------------------------------------------
 // takeTurn
@@ -131,14 +140,13 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 	return false;
 }
 
-// ----------------------------------------------------------------------------
-// main
-// ----------------------------------------------------------------------------
-int main() {
+template <const int N>
+void setup(GameBoard<Tile, Player, N, N> &bg) {
 	// SETUP THE BOARD //
 
 	// Input the names of all players
 	vector<string> playerNames;
+	cout << endl;
 	std::cout << "Name rules" << std::endl;
 	std::cout << "1. no spaces in a player name, use '_'" << std::endl;
 	std::cout << "2. use a space to separate more than one player name" << std::endl;
@@ -151,33 +159,73 @@ int main() {
 	while (streamLine >> name) {
 		playerNames.push_back(name);
 	}
-	
-	// Input the size of the board
-	const int r = 6;
-	const int c = 6;
 
 	// Initialize a board game
-	GameBoard<Tile, Player, r, c> bg(playerNames);
+	//bg = GameBoard<Tile, Player, N, N>(playerNames);
 
 	// Initialize tiles
 	cout << "The board contains the following tiles:" << endl;
-	TileFactory *tf = TileFactory::get(r*c);
-	for (int i = 0; i < r; i++) {
-		for (int j = 0; j < c; j++) {
+	TileFactory *tf = TileFactory::get(N*N);
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
 			Tile * tile = tf->next();
 			bg.add(*tile, i, j);
 		}
 	}
 
-	// PLAY THE GAME //
-	bg.setPlayers();
+	bg.setPlayers(playerNames);
+}
 
+// ----------------------------------------------------------------------------
+// main
+// ----------------------------------------------------------------------------
+int main() {
+	// The size of the board
+	const int N = 6;
+
+	// LOAD //
+	cout << "Would you like to resume a game? 1 (YES), 0 (NO)" << endl;
+	bool resume = false;
+	cin >> resume;
+
+	// Empty cin buffer
+	string line; getline(cin, line);
+
+	GameBoard<Tile, Player, N, N> bg;
+	if (resume) {
+		bool loaded = load<N>(bg);
+		if (loaded) {
+			cout << "Game loaded successfully" << endl;
+			cout << endl;
+		} else {
+			setup<N>(bg);
+		}
+	} else {
+		setup<N>(bg);
+	}
+
+	vector<string> playerNames = bg.getPlayerNames();
+
+	// PLAY THE GAME //
 	bool isWinner = false;
 
 	while (!isWinner){
 		// Iterate over players
 		for (auto pName : playerNames) {
 			do {
+				// Check if player wants to pause 
+				cout << "Would you like to pause the game? 1 (YES), 0 (NO)" << endl;
+				bool pause = false;	cin >> pause;
+				// Empty cin buffer
+				getline(cin, line);
+
+				// Save
+				if (pause) {
+					save<N>(bg);
+					return 0;
+				}
+
+				// Take the turn
 				cout << endl; 
 				cout << "====================================" << endl;
 				cout << bg << endl;
@@ -185,7 +233,7 @@ int main() {
 				cout << "Player " << pName << "'s turn" << endl;
 				cout << endl;
 			}	// Keep playing if takeTurn returns false
-			while (! takeTurn<r>(bg, pName));
+			while (! takeTurn<N>(bg, pName));
 
 			// If player won
 			if (bg.win(pName)){
@@ -195,4 +243,6 @@ int main() {
 			}
 		}
 	}
+
+	return 0;
 }
