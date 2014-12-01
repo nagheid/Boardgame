@@ -38,6 +38,7 @@ bool load(GameBoard<Tile, Player, N, N> &bg) {
 		ss >> bg;
 		*/
 		ifs >> bg;
+		cout << "Loaded the Game Board:" << endl;
 		cout << bg;
 		return true;
 	} else {
