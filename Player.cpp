@@ -72,7 +72,6 @@ istream& operator>>(istream& is, Player& player) {
 	// Read all player data
 	string line; getline(is, line);
 	std::istringstream streamLine(line);
-
 	std::vector<string> tokens;
 	copy(std::istream_iterator<std::string>(streamLine),
 		std::istream_iterator<std::string>(),
@@ -87,9 +86,6 @@ istream& operator>>(istream& is, Player& player) {
 	player.spice = std::stoi(tokens[9]);
 	player.jewel = std::stoi(tokens[11]);
 	player.ruby = std::stoi(tokens[13]);
-
-	std::cout << "Copied ";
-	std::cout << player << std::endl;
 
 	return is;
 }
