@@ -77,8 +77,10 @@ istream& operator>>(istream& is, Player& player) {
 		std::istream_iterator<std::string>(),
 		std::back_inserter(tokens));
 
-	// TODO find a better way to do this
 	// Separate into tokens and ignore every other token
+	// We are using static indices since we know exactly
+	// how the Player object is printed out in ostream
+	// (even though there are better ways)
 	player.name = tokens[1];
 	player.food = std::stoi(tokens[3]);
 	player.gold = std::stoi(tokens[5]);

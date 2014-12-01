@@ -36,72 +36,37 @@ ostream& operator<<(ostream& os, const Tile& tile){
 	return os;
 }
 
-Tile* Tile::createTile(/*Tile * tile, */string name) {
+/*
+ * Create a Tile derived class based on tile name
+ */
+Tile* Tile::createTile(string name) {
 	if (name.find("BlackMarket") != std::string::npos) {
-		//tile = new BlackMarketTile();
-		//return new BlackMarketTile();
-		BlackMarketTile * t = new BlackMarketTile();
-		return t;
+		return new BlackMarketTile();
 	} else if (name.find("CartManufacturer") != std::string::npos) {
-		//tile = 
-		//return new CartManufacturerTile();
-		CartManufacturerTile * t = new CartManufacturerTile();
-		return t;
+		return new CartManufacturerTile();
 	} else if (name.find("Casino") != std::string::npos) {
-		//tile = 
-		//return new CasinoTile();
-		CasinoTile * t = new CasinoTile();
-		return t;
+		return new CasinoTile();
 	} else if (name.find("FabricManufactures") != std::string::npos) {
-		//tile = 
-		//return new FabricManufacturesTile();
-		FabricManufacturesTile * t = new FabricManufacturesTile();
-		return t;
+		return new FabricManufacturesTile();
 	} else if (name.find("FabricMarket") != std::string::npos) {
-		//tile = 
-		//return new FabricMarketTile();
-		FabricMarketTile * t = new FabricMarketTile();
-		return t;
+		return new FabricMarketTile();
 	} else if (name.find("GemMerchant") != std::string::npos) {
-		//tile = 
-		//return new GemMerchantTile();
-		GemMerchantTile * t = new GemMerchantTile();
-		return t;
+		return new GemMerchantTile();
 	} else if (name.find("JelewryMarket") != std::string::npos) {
-		//tile = 
-		//return new JelewryMarketTile();
-		JelewryMarketTile * t = new JelewryMarketTile();
-		return t;
+		return new JelewryMarketTile();
 	} else if (name.find("Jeweler") != std::string::npos) {
-		//tile = 
 		return new JewelerTile();
 	} else if (name.find("Palace") != std::string::npos) {
-		//tile = 
-		//return new PalaceTile();
-		PalaceTile * t = new PalaceTile();
-		return t;
+		return new PalaceTile(); 
 	} else if (name.find("Restaurant") != std::string::npos) {
-		//tile = 
-		//return new RestaurantTile();
-		RestaurantTile * t = new RestaurantTile();
-		return t;
+		return new RestaurantTile();
 	} else if (name.find("SmallMarket") != std::string::npos) {
-		//tile = 
-		//return new SmallMarketTile();
-		SmallMarketTile * t = new SmallMarketTile();
-		return t;
+		return new SmallMarketTile();
 	} else if (name.find("SpiceMarket") != std::string::npos) {
-		//tile = 
-		//return new SpiceMarketTile();
-		SpiceMarketTile * t = new SpiceMarketTile();
-		return t;
+		return new SpiceMarketTile();
 	} else if (name.find("SpiceMerchant") != std::string::npos) {
-		//tile = 
-		//return new SpiceMerchantTile();
-		SpiceMerchantTile * t = new SpiceMerchantTile();
-		return t;
+		return new SpiceMerchantTile();
 	} else {
-		//tile = 
 		return new Tile();
 	}
 }
@@ -122,15 +87,10 @@ istream& operator>>(istream& is, Tile& tile){
 	for (int i = 1; i < tokens.size() - 1; i++) {
 		name += tokens[i];
 	}
-	//tile.name = name;
 
-	// Create derived tile
-	Tile * t = Tile::createTile(/*&tile,*/ name);
-	//tile = (Tile&)t;
-	tile = (Tile&)*t;
+	// Update tile
 	tile.id = id;
 	tile.actionCount = actionCount;
-	//tile.name = name;
 
 	return is;
 }

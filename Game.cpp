@@ -19,9 +19,9 @@ using std::cerr;
 template <const int N>
 void save(GameBoard<Tile, Player, N, N> &bg) {
 	ofstream ofs("boardgame.txt", ios::binary);
-	//ofs.write((char *)bg, sizeof(bg));
 	ofs << bg;
 	ofs.close();
+	cout << "Saved Game!" << endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -32,13 +32,8 @@ bool load(GameBoard<Tile, Player, N, N> &bg) {
 	ifstream ifs("boardgame.txt", ios::binary);
 
 	if (ifs) {
-		/*
-		string str;		getline(ifs, str, '|');
-		std::istringstream ss(str);
-		ss >> bg;
-		*/
 		ifs >> bg;
-		cout << "Loaded the Game Board:" << endl;
+		cout << "Loaded Game:" << endl;
 		cout << bg;
 		return true;
 	} else {
@@ -61,6 +56,11 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		cout << "0(UP), 1(DOWN), 2(LEFT), 3(RIGHT)" << endl;
 		cin.exceptions(std::istream::failbit); 
 		int intM; cin >> intM;
+
+		if (intM < 0 || intM > 3) {
+			cerr << "Invalid move!" << endl;
+			return false;
+		}
 
 		std::map<int, GameBoard<Tile, Player, N, N>::Move> map;
 		map[0] = GameBoard<Tile, Player, N, N>::UP;
@@ -104,7 +104,6 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 				cerr << "Cannot act on tile." << endl;
 				system("pause");
 				validAction = false;
-				//return false; // true
 			}
 			else {
 				validAction = true;
@@ -166,9 +165,6 @@ void setup(GameBoard<Tile, Player, N, N> &bg) {
 	while (streamLine >> name) {
 		playerNames.push_back(name);
 	}
-
-	// Initialize a board game
-	//bg = GameBoard<Tile, Player, N, N>(playerNames);
 
 	// Initialize tiles
 	cout << "The board contains the following tiles:" << endl;

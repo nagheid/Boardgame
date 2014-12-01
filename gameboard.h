@@ -3,13 +3,13 @@
 
 #include <cstdlib>
 #include <functional>
+#include <fstream>
 #include <istream>
 #include <iostream>
 #include <ostream>
+#include <sstream>
 #include <unordered_map>
 #include <vector>
-#include <fstream>
-#include <sstream>
 
 using std::string;
 using std::unordered_map;
@@ -18,9 +18,6 @@ using std::istream;
 using std::ostream;
 using std::cout;
 using std::endl;
-
-#define PKEY
-#define PKEY_VEC
 
 template <class T, class J, const int R, const int C>
 class GameBoard;
@@ -42,19 +39,13 @@ class GameBoard {
 	// 2D vector of tiles
 	vector<vector<T*>> d_tiles;
 
-	// Map of <tile, players>
-#ifdef PKEY
+	// Map of <player, tiles vector>
 	// This is less efficient than using T as keys
 	// But it harder to hash over T since they have no
 	// unique value
-	// Tried with extern or random ID but failed
-	// TODO ^ needs to be static not global/extern
-#ifdef PKEY_VEC
 	unordered_map<J, vector<int>, PlayerHashFunction<J>> d_board;
-#else
-	unordered_map<J, T*, PlayerHashFunction<J>> d_board;
-#endif
-#endif
+
+	//unordered_map<J, T*, PlayerHashFunction<J>> d_board;
 
 public:
 	enum Move {
@@ -101,28 +92,34 @@ public:
 
 };
 
+/*
+ * GameBoard Constructor
+ */
 template <class T, class J, const int R, const int C>
 GameBoard<T, J, R, C>::GameBoard() {
 	// Initialize empty tile vector
 	for (int i = 0; i < R; i++)	{
 		for (int j = 0; j < C; j++)	{
-#ifdef PKEY
 			d_tiles.push_back(vector <T*>());
 			d_tiles[i].push_back(new T());
-#endif
 		}
 	}
 }
 
+/*
+ * Add a tile to the GameBoard
+ */
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::add(const T& tile, int row, int col){
 	// The value in d_tiles is a pointer to the tile
 	d_tiles[row][col] = (T*) &tile;
-	T * tilePtr = d_tiles[row][col];
 	cout << tile;
 
 }
 
+/*
+ * Add players to the game board
+ */
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::setPlayers(vector<string> playerNames) {
 	auto baseTile = d_tiles[0][0];
@@ -130,20 +127,21 @@ void GameBoard<T, J, R, C>::setPlayers(vector<string> playerNames) {
 	// Initialize players
 	for (auto name : playerNames) {
 		J player = J(name);
-#ifdef PKEY
-#ifdef PKEY_VEC
 		d_board[player] = vector<int>{0, 0};
-#else
-		d_board[player] = baseTile;
-#endif
-#endif
 	}
 }
+
+/*
+ * Get a tile based on its coordinates
+ */
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(int row, int col) const{
 	return *d_tiles[row][col];
 }
 
+/*
+ * Get coordinates of a tile
+ */
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::getCoordinate(const T &tile, int *row, int *col) const{
 	for (int r = 0; r < R; r++) {
@@ -157,6 +155,9 @@ void GameBoard<T, J, R, C>::getCoordinate(const T &tile, int *row, int *col) con
 	}
 }
 
+/*
+ * Update player in gemeboard map
+ */
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::setPlayer(J player){
 	// Iterate over players
@@ -165,13 +166,7 @@ void GameBoard<T, J, R, C>::setPlayer(J player){
 		// If found player
 		if (p.getName() == player.getName()) {
 			// Update pointer
-#ifdef PKEY
-#ifdef PKEY_VEC
 			vector<int> tiles = player_iter->second;
-#else
-			T* tiles = player_iter->second;
-#endif
-#endif
 			d_board.erase(player_iter);
 			d_board[player] = tiles;
 			//*(player_iter->first) = &player;
@@ -182,6 +177,9 @@ void GameBoard<T, J, R, C>::setPlayer(J player){
 	}
 }
 
+/*
+ * Get a player based on his name
+ */
 template <class T, class J, const int R, const int C>
 J GameBoard<T, J, R, C>::getPlayer(const string& playerName){
 	// Iterate over tiles
@@ -192,27 +190,30 @@ J GameBoard<T, J, R, C>::getPlayer(const string& playerName){
 		}
 	}
 
+	throw std::out_of_range("Player is not in the board");
 	return NULL;
 }
 
+/*
+ * Get the tile where the specified player is located
+ */
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(const string& playerName) const{
 	// Iterate over players
 	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
 		J player = player_iter->first;
 		if (player.getName() == playerName) {
-#ifdef PKEY_VEC
 			vector<int> vec = player_iter->second;
 			return *d_tiles[vec[0]][vec[1]];
-#else
-			return *(player_iter->second);
-#endif
 		}
 	}
-	//return tile;
+	throw std::out_of_range("Tile is not in the board");
 	return NULL;
 }
 
+/*
+ * Return the names of all the players in the game board
+ */
 template <class T, class J, const int R, const int C>
 vector<string> GameBoard<T, J, R, C>::getPlayerNames() const {
 	vector<string> playerNames;
@@ -223,6 +224,9 @@ vector<string> GameBoard<T, J, R, C>::getPlayerNames() const {
 	return playerNames;
 }
 
+/*
+ * Get the players on a specified tile
+ */
 template <class T, class J, const int R, const int C>
 vector<J> GameBoard<T, J, R, C>::getPlayers(const T& tile) const{
 	int tmp_row = 0;
@@ -231,13 +235,8 @@ vector<J> GameBoard<T, J, R, C>::getPlayers(const T& tile) const{
 	
 	vector<J> players;
 	for (auto player_iter = d_board.begin(); player_iter != d_board.end(); ++player_iter) {
-#ifdef PKEY_VEC
 		vector<int> vec = player_iter->second;
 		if (*d_tiles[vec[0]][vec[1]] == tile) {
-#else
-		T t = *(player_iter->second);
-		if (t == tile) {
-#endif
 			J player = player_iter->first;
 			players.push_back(player);
 		}
@@ -245,6 +244,9 @@ vector<J> GameBoard<T, J, R, C>::getPlayers(const T& tile) const{
 	return players;
 }
 
+/*
+ * Check if a player won the game
+ */
 template <class T, class J, const int R, const int C>
 bool GameBoard<T, J, R, C>::win(const string& playerName){
 	bool result = false;
@@ -258,6 +260,9 @@ bool GameBoard<T, J, R, C>::win(const string& playerName){
 	return result;
 }
 
+/*
+ * Check if the specified move is valid
+ */
 template <class T, class J, const int R, const int C>
 bool GameBoard<T, J, R, C>::moveValid(Move move, const string& playerName){
 	// Find the tile player is on
@@ -286,18 +291,20 @@ bool GameBoard<T, J, R, C>::moveValid(Move move, const string& playerName){
 	return moveValid;
 }
 
+/*
+ * Move player to a new tile based on the specified "move"
+ */
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
-	// TODO make this more efficient
-
 	// Find the tile player is on
 	T old_tile = getTile(playerName);
-	/*
-	if (! old_tile==NULL ) {
+
+	if (old_tile == NULL ) {
 		// Player not in board
-		//return
+		throw std::out_of_range("Player is not in the board");
+		return NULL;
 	}
-	*/
+
 	int old_row = 0;
 	int old_col = 0;
 	getCoordinate(old_tile, &old_row, &old_col);
@@ -327,20 +334,13 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 	// Move the player to new tile
 	T* new_tile = d_tiles[new_row][new_col];
 	J player = getPlayer(playerName);
-#ifdef PKEY
-#ifdef PKEY_VEC
 	d_board[player] = vector<int>{new_row, new_col};
-#else
-	d_board[player] = new_tile;
-#endif
-#endif
-	int tmp_row = 0;
-	int tmp_col = 0;
-	getCoordinate(*new_tile, &tmp_row, &tmp_col);
 	return *new_tile;
 }
 
-
+/*
+ * Overload operator<< to use when saving/pausing the game and displaying status
+ */
 template <class T, class J, const int R, const int C>
 inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) {
 	// All tiles
@@ -357,13 +357,8 @@ inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) 
 	os << "Occupied tiles:" << endl;
 	for (auto player_iter = gameboard.d_board.begin(); player_iter != gameboard.d_board.end(); ++player_iter) {
 		J player = player_iter->first;
-#ifdef PKEY_VEC
 		vector<int> vec = player_iter->second;
 		T tile = *(gameboard.d_tiles[vec[0]][vec[1]]);
-		T * tilePtr = gameboard.d_tiles[vec[0]][vec[1]];
-#else
-		T tile = *(player_iter->second);
-#endif
 		os << player;
 		os << "Is on tile:" << endl;
 		os << tile;
@@ -375,90 +370,8 @@ inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) 
 }
 
 /*
-Tile * createTile(string name) {
-	if (name.find("BlackMarket") != std::string::npos) {
-		//tile = new BlackMarketTile();
-		//return new BlackMarketTile();
-		BlackMarketTile * t = new BlackMarketTile();
-		return t;
-	}
-	else if (name.find("CartManufacturer") != std::string::npos) {
-		//tile = 
-		//return new CartManufacturerTile();
-		CartManufacturerTile * t = new CartManufacturerTile();
-		return t;
-	}
-	else if (name.find("Casino") != std::string::npos) {
-		//tile = 
-		//return new CasinoTile();
-		CasinoTile * t = new CasinoTile();
-		return t;
-	}
-	else if (name.find("FabricManufactures") != std::string::npos) {
-		//tile = 
-		//return new FabricManufacturesTile();
-		FabricManufacturesTile * t = new FabricManufacturesTile();
-		return t;
-	}
-	else if (name.find("FabricMarket") != std::string::npos) {
-		//tile = 
-		//return new FabricMarketTile();
-		FabricMarketTile * t = new FabricMarketTile();
-		return t;
-	}
-	else if (name.find("GemMerchant") != std::string::npos) {
-		//tile = 
-		//return new GemMerchantTile();
-		GemMerchantTile * t = new GemMerchantTile();
-		return t;
-	}
-	else if (name.find("JelewryMarket") != std::string::npos) {
-		//tile = 
-		//return new JelewryMarketTile();
-		JelewryMarketTile * t = new JelewryMarketTile();
-		return t;
-	}
-	else if (name.find("Jeweler") != std::string::npos) {
-		//tile = 
-		return new JewelerTile();
-	}
-	else if (name.find("Palace") != std::string::npos) {
-		//tile = 
-		//return new PalaceTile();
-		PalaceTile * t = new PalaceTile();
-		return t;
-	}
-	else if (name.find("Restaurant") != std::string::npos) {
-		//tile = 
-		//return new RestaurantTile();
-		RestaurantTile * t = new RestaurantTile();
-		return t;
-	}
-	else if (name.find("SmallMarket") != std::string::npos) {
-		//tile = 
-		//return new SmallMarketTile();
-		SmallMarketTile * t = new SmallMarketTile();
-		return t;
-	}
-	else if (name.find("SpiceMarket") != std::string::npos) {
-		//tile = 
-		//return new SpiceMarketTile();
-		SpiceMarketTile * t = new SpiceMarketTile();
-		return t;
-	}
-	else if (name.find("SpiceMerchant") != std::string::npos) {
-		//tile = 
-		//return new SpiceMerchantTile();
-		SpiceMerchantTile * t = new SpiceMerchantTile();
-		return t;
-	}
-	else {
-		//tile = 
-		return new Tile();
-	}
-}
+* Overload operator>> to use when loading/resuming the game
 */
-
 template <class T, class J, const int R, const int C>
 inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 	string line;
@@ -488,26 +401,12 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 		}
 
 		// Create tile
-		//T& tile = Tile();
-		//T * tile = NULL; // = new Tile();
-		//T tile;
-		//T * t = new Tile();
-		//T& tile = *t;
-
 		T * tile = T::createTile(tilename);
-
-		//sLine.str(line);
 		std::istringstream sLineT(line);
 		sLineT >> *tile;
 
 		// Dereferencing fixed load 
 		gameboard.d_tiles[i][j] = tile;
-		//*(gameboard.d_tiles[i][j]) = (T&)*tile;
-		//*(gameboard.d_tiles[i][j]) = tile;
-		//*(gameboard.d_tiles[i][j]) = (T&) tile;
-		//&(gameboard.d_tiles[i][j]) = tile;
-		//gameboard.d_tiles[i][j] = (T*)&tile;
-		//gameboard.d_tiles[i][j] = tile;
 
 		if (j < C-1) {
 			// Next col
@@ -525,7 +424,6 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 		if (line.find("Player:") != std::string::npos){
 			// Player line
 			J player("NA");
-			//sLine.str(line);
 			std::istringstream sLine2(line);
 			sLine2 >> player;
 
@@ -536,17 +434,12 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 			T tile;
 			getline(is, line);
 			std::istringstream sLine3(line);
-			//sLine3.str(line);
 			sLine3 >> tile;
 
 			// Update d_board map
-#ifdef PKEY_VEC
 			int tmp_row = 0; int tmp_col = 0;
 			gameboard.getCoordinate(tile, &tmp_row, &tmp_col);
 			gameboard.d_board[player] = vector<int>{tmp_row,tmp_col};
-#else
-			gameboard.d_board[player] = &tile;
-#endif
 		}
 	}
 	return is;
