@@ -36,6 +36,38 @@ ostream& operator<<(ostream& os, const Tile& tile){
 	return os;
 }
 
+void createTile(Tile * tile, string name) {
+	if (name.find("BlackMarket") != std::string::npos) {
+		tile = new BlackMarketTile();
+	} else if (name.find("CartManufacturer") != std::string::npos) {
+		tile = new CartManufacturerTile();
+	} else if (name.find("Casino") != std::string::npos) {
+		tile = new CasinoTile();
+	} else if (name.find("FabricManufactures") != std::string::npos) {
+		tile = new FabricManufacturesTile();
+	} else if (name.find("FabricMarket") != std::string::npos) {
+		tile = new FabricMarketTile();
+	} else if (name.find("GemMerchant") != std::string::npos) {
+		tile = new GemMerchantTile();
+	} else if (name.find("JelewryMarket") != std::string::npos) {
+		tile = new JelewryMarketTile();
+	} else if (name.find("Jeweler") != std::string::npos) {
+		tile = new JewelerTile();
+	} else if (name.find("Palace") != std::string::npos) {
+		tile = new PalaceTile();
+	} else if (name.find("Restaurant") != std::string::npos) {
+		tile = new RestaurantTile();
+	} else if (name.find("SmallMarket") != std::string::npos) {
+		tile = new SmallMarketTile();
+	} else if (name.find("SpiceMarket") != std::string::npos) {
+		tile = new SpiceMarketTile();
+	} else if (name.find("SpiceMerchant") != std::string::npos) {
+		tile = new SpiceMerchantTile();
+	} else {
+		tile = new Tile();
+	}
+}
+
 istream& operator>>(istream& is, Tile& tile){
 	// Store stream into tokens vector
 	string line, token;	getline(is, line);
@@ -46,12 +78,18 @@ istream& operator>>(istream& is, Tile& tile){
 		back_inserter(tokens));
 
 	// Parse the tokens
-	tile.id = std::stoi(tokens[0]);
-	tile.actionCount = std::stoi(tokens[tokens.size() - 1]);
+	int id = std::stoi(tokens[0]);
+	int actionCount = std::stoi(tokens[tokens.size() - 1]);
 	string name;
 	for (int i = 1; i < tokens.size() - 1; i++) {
 		name += tokens[i];
 	}
+	//tile.name = name;
+
+	// Create derived tile
+	createTile(&tile, name);
+	tile.id = id;
+	tile.actionCount = actionCount;
 	tile.name = name;
 
 	return is;

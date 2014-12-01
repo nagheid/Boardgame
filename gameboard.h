@@ -366,7 +366,7 @@ inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) 
 #endif
 		os << player;
 		os << "Is on tile:" << endl;
-		os << tile; /* << "\t(" << tilePtr << ")" */
+		os << tile;
 	}
 
 	os << endl;
@@ -382,6 +382,7 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 	// Fill d_tiles
 	int i = 0;
 	int j = 0;
+	vector<vector<T*>> * tiles = & (gameboard.d_tiles);
 	while (getline(is, line) && !line.empty()) {
 		if (line.find("All tiles") != std::string::npos) {
 			continue;
@@ -390,13 +391,22 @@ inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 			break;
 		}
 
+		//T& tile = Tile();
+		//T * tile = NULL; // = new Tile();
 		T tile;
+		//T * t = new Tile();
+		//T& tile = *t;
+
 		//sLine.str(line);
 		std::istringstream sLine2(line);
 		sLine2 >> tile;
 
-		// This * fixed load 
+		// Dereferencing fixed load 
 		*(gameboard.d_tiles[i][j]) = tile;
+		//*(gameboard.d_tiles[i][j]) = (T&) tile;
+		//&(gameboard.d_tiles[i][j]) = tile;
+		//gameboard.d_tiles[i][j] = (T*)&tile;
+		//gameboard.d_tiles[i][j] = tile;
 
 		if (j < C-1) {
 			// Next col
