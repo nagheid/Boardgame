@@ -56,6 +56,8 @@ RestaurantTile::RestaurantTile(int _actionCount) : Tile(_actionCount) {
 
 bool RestaurantTile::action(Player& player){
     player.setFood(10);
+	cout << player.getName() << "'s food supply set to 10." << endl;
+	Tile::action(player);
     return true;
 }
 
@@ -88,10 +90,13 @@ bool SpiceMerchantTile::action(Player& player){
         player.setGold(player.getGold() - 2);
         if(space < 3){
 			player.setSpice(player.getSpice() + space);
+			cout << "Added " << space << " spices to " + player.getName() << endl;
         }
         else{
             player.setSpice(player.getSpice() + 3);
+			cout << "Added 3 spices to " + player.getName() << endl;
         }
+		Tile::action(player);
         return true;
     }
     return false;
@@ -128,10 +133,13 @@ bool FabricManufacturesTile::action(Player& player){
         player.setGold(player.getGold() - 2);
         if(space < 3){
 			player.setFabric(player.getFabric() + space);
+			cout << "Added " << space << " fabrics to " + player.getName() << endl;
         }
         else{
             player.setFabric(player.getFabric() + 3);
+			cout << "Added 3 fabrics to " + player.getName() << endl;
         }
+		Tile::action(player);
         return true;
     }
     return false;
@@ -168,10 +176,13 @@ bool JewelerTile::action(Player& player){
         player.setGold(player.getGold() - 2);
         if(space < 3){
 			player.setJewel(player.getJewel() + space);
+			cout << "Added " << space << " jewels to " + player.getName() << endl;
         }
         else{
             player.setJewel(player.getJewel() + 3);
+			cout << "Added 3 jewels to " + player.getName() << endl;
         }
+		Tile::action(player);
         return true;
     }
     return false;
@@ -204,6 +215,8 @@ bool CartManufacturerTile::action(Player& player){
     if(player.getGold() >= 7){
         player.setGold(player.getGold() - 7);
         player.setCart(player.getCart() + 3);
+		cout << "Added 3 to cart space to " + player.getName() << endl;
+		Tile::action(player);
         return true;
     }
     return false;
@@ -239,6 +252,8 @@ bool SmallMarketTile::action(Player& player){
         player.setJewel(player.getJewel() - 1);
         player.setFabric(player.getFabric() -1);
         player.setGold(player.getGold() + 8);
+		cout << "Added 8 gold to " + player.getName() << endl;
+		Tile::action(player);
         return true;
     }
     return false;
@@ -270,6 +285,8 @@ bool SpiceMarketTile::action(Player& player){
     if(player.getSpice() >= 3){
         player.setSpice(player.getSpice() - 3);
         player.setGold(player.getGold() + 6);
+		cout << "Added 6 gold to " + player.getName() << endl;
+		Tile::action(player);
 		return true;
     }
 	return false;
@@ -301,6 +318,8 @@ bool JelewryMarketTile::action(Player& player){
     if(player.getJewel() >= 3){
         player.setJewel(player.getJewel() - 3);
         player.setGold(player.getGold() + 6);
+		cout << "Added 6 gold to " + player.getName() << endl;
+		Tile::action(player);
 		return true;
     }
 	return false;
@@ -332,6 +351,8 @@ bool FabricMarketTile::action(Player& player){
     if(player.getFabric() >= 3){
         player.setFabric(player.getFabric() - 3);
         player.setGold(player.getGold() + 6);
+		cout << "Added 6 gold to " + player.getName() << endl;
+		Tile::action(player);
 		return true;
     }
 	return false;
@@ -377,23 +398,28 @@ bool BlackMarketTile::action(Player& player){
 		int tileNum = rand() % 4 + 1;
 		if (tileNum == 1){
 			player.setSpice(player.getSpice() + 1);
+			cout << "Added 1 spice to " + player.getName() << endl;
 		}
 		else if (tileNum == 2){
 			player.setFabric(player.getFabric() + 1);
+			cout << "Added 1 fabric to " + player.getName() << endl;
 		}
 		else if (tileNum == 3){
 			player.setJewel(player.getJewel() + 1);
+			cout << "Added 1 jewel to " + player.getName() << endl;
 		}
 		else if (tileNum == 4){
 			player.setRuby(player.getRuby() + 1);
+			cout << "Added 1 ruby to " + player.getName() << endl;
 		}
 	}
-
+	Tile::action(player);
 	return true;
 }
 
 bool BlackMarketTile::actionValid(Player& player, int numOfOtherPlayers){
 	if (player.getGold() >= (1+numOfOtherPlayers)){
+		Tile::action(player);
 		return true;
 	}
 	return false;
@@ -429,14 +455,20 @@ bool CasinoTile::action(Player& player){
 
 	if (num == 1){
 		player.setGold(player.getGold() + 10);
+		cout << player.getName() << " won 10 gold." << endl;
 	}
 	else if (num > 1 && num < 4){
 		player.setGold(player.getGold() + 3);
+		cout << player.getName() << " won 3 gold." << endl;
 	}
 	else if (num > 3 && num < 7){
 		player.setGold(player.getGold() + 2);
+		cout << player.getName() << " won 2 gold." << endl;
 	}
-
+	else{
+		cout << "Sorry, no winnings." + player.getName() << endl;
+	}
+	Tile::action(player);
 	return true;
 }
 
@@ -469,6 +501,7 @@ bool GemMerchantTile::action(Player& player) {
 		player.setGold(player.getGold() - nextSellPrice);
 		player.setRuby(player.getRuby() + 1);
 		Tile::action(player);
+		cout << "Added 1 ruby to " << player.getName() << endl;
 		return true;
 	}
 	return false;
@@ -504,6 +537,8 @@ bool PalaceTile::action(Player& player){
 		player.setJewel(player.getJewel() - 5);
 		player.setSpice(player.getSpice() - 5);
 		player.setRuby(player.getRuby() + 1);
+		cout << "Added 1 ruby to " << player.getName() << endl;
+		Tile::action(player);
 		return true;
 	}
 	return false;
