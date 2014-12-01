@@ -86,6 +86,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 						bg.setPlayer(op);
 					}
 					// Perform action
+					cout << endl;
 					t.action(p);
 					bg.setPlayer(p);
 				}
