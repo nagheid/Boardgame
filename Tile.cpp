@@ -310,7 +310,7 @@ Tile* SpiceMarketTile::clone(){
 // ----------------------------------------------------------------------------
 
 JelewryMarketTile::JelewryMarketTile(int _actionCount) : Tile(_actionCount)  {
-	name = "Jelewry Market";
+	name = "Jewelry Market";
 	description = "A player can sell 3 pieces of jewelry for 6 pieces of gold.";
 }
 
