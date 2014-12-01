@@ -48,7 +48,6 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		}
 
 		// If player has food items
-		bool actionSuccess = false;
 		if (p.canAct()) {
 			// Other players on the tile
 			vector<Player> otherPlayers = bg.getPlayers(t);
@@ -90,14 +89,14 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 					t.action(p);
 					bg.setPlayer(p);
 				}
-				actionSuccess = true;
 			}
 
 			// Display player status
 			cout << p << endl;
 		}
-
-		return actionSuccess;
+		cout << p.getName() << "'s turn is over." << endl;
+		system("pause");
+		return true;
 	} catch (std::istream::failure e) {
 		cerr << "Incorrect key pressed" << endl;
 		cin.clear();
