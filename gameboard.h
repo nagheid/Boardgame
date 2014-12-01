@@ -285,8 +285,30 @@ bool GameBoard<T, J, R, C>::win(const string& playerName){
 
 template <class T, class J, const int R, const int C>
 bool GameBoard<T, J, R, C>::moveValid(Move move, const string& playerName){
-	// TODO 
-	return true;
+	// Find the tile player is on
+	T old_tile = getTile(playerName);
+	int old_row = 0;
+	int old_col = 0;
+	getCoordinate(old_tile, &old_row, &old_col);
+
+	// Find the tile player wants to move to
+	bool moveValid = false;
+	switch (move) {
+	case UP:
+		moveValid = ! (old_row - 1 < 0);
+		break;
+	case DOWN:
+		moveValid = ! (old_row + 1 > R);
+		break;
+	case RIGHT:
+		moveValid = ! (old_col + 1 > C);
+		break;
+	case LEFT:
+		moveValid = ! (old_col - 1 < 0);
+		break;
+	}
+
+	return moveValid;
 }
 
 template <class T, class J, const int R, const int C>
@@ -310,20 +332,20 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 	int new_col = 0;
 	switch (move) {
 	case UP:
-		new_row = (old_row - 1) % R;
+		new_row = (old_row - 1);
 		new_col = old_col;
 		break;
 	case DOWN:
-		new_row = (old_row + 1) % R;
+		new_row = (old_row + 1);
 		new_col = old_col;
 		break;
 	case RIGHT:
 		new_row = old_row;
-		new_col = (old_col + 1) % C;
+		new_col = (old_col + 1);
 		break;
 	case LEFT:
 		new_row = old_row;
-		new_col = (old_col - 1) % C;
+		new_col = (old_col - 1);
 		break;
 	}
 

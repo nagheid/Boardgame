@@ -9,6 +9,8 @@
 #include "player.h"
 #include "tile.h"
 
+using std::cerr;
+
 template <const int N>
 bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 	try {
@@ -31,14 +33,19 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		GameBoard<Tile, Player, N, N>::Move m = map[intM];
 		cout << "Player pick move: " << m << endl;
 
-		// TODO check if move is valid
+		// Get current tile
+		Tile& t = (Tile&)bg.getTile(pName);
+		cout << "Player is on tile:\t" << t << endl;
 
-		// Move player to tile
-		Tile& old_tile = (Tile&)bg.getTile(pName);
-		cout << "Player was on tile:\t" << old_tile << endl;
-
-		Tile& t = (Tile&)bg.move(m, pName);
-		cout << "Player is now on tile:\t" << t << endl;
+		// Check if move is valid
+		if (bg.moveValid(m, pName)) {
+			// Move player to tile
+			t = (Tile&)bg.move(m, pName);
+			cout << "Player moved to tile:\t" << t << endl;
+		} else {
+			cerr << "Invalid move!" << endl;
+			return false;
+		}
 
 		// If player has food items
 		bool actionSuccess = false;
@@ -57,7 +64,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 			bool validAction = false;
 			bool makeAction = false;
 			if (! t.actionValid(p, otherPlayers.size() - 1)){
-				cout << "Cannot act on tile." << endl;
+				cerr << "Cannot act on tile." << endl;
 				cout << "Please press any key to continue" << endl;
 				string placeholder;
 				cin >> placeholder;
@@ -95,10 +102,10 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 
 		return actionSuccess;
 	} catch (std::istream::failure e) {
-		cout << "Incorrect key pressed";
+		cerr << "Incorrect key pressed" << endl;
 		cin.clear();
 	} catch (std::out_of_range e) {
-		cout << e.what();
+		cerr << e.what() << endl;
 	}
 	
 	return false;
@@ -136,12 +143,9 @@ int main() {
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
 			Tile * tile = tf->next();
-			//cout << *tile << "(" << &tile << ")" << endl;
 			bg.add(*tile, i, j);
 		}
 	}
-	cout << bg << endl;
-	cout << endl;
 
 	// PLAY THE GAME //
 	bg.setPlayers();
@@ -149,12 +153,12 @@ int main() {
 	// Iterate over players
 	for (auto pName : playerNames) {
 		do {
-			cout << bg << endl;
+			cout << endl; 
 			cout << "====================================" << endl;
+			cout << bg << endl;
 			cout << endl;
 			cout << "Player " << pName << "'s turn" << endl;
 			cout << endl;
-			cout << bg << endl;
 		}	// Keep playing if takeTurn returns false
 		while (! takeTurn<r>(bg, pName));
 		// If player won
