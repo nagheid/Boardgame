@@ -32,7 +32,7 @@ Tile* Tile::clone(){
 }
 
 ostream& operator<<(ostream& os, const Tile& tile){
-	os << tile.id << "\t" << tile.name << "\t" << tile.actionCount;
+	os << tile.id << "\t" << tile.name << "\t" << tile.actionCount << endl;
 	return os;
 }
 

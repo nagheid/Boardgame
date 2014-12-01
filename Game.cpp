@@ -29,14 +29,18 @@ void save(GameBoard<Tile, Player, N, N> &bg) {
 template <const int N>
 bool load(GameBoard<Tile, Player, N, N> &bg) {
 	ifstream ifs("boardgame.txt", ios::binary);
+
 	if (ifs) {
+		/*
+		string str;		getline(ifs, str, '|');
+		std::istringstream ss(str);
+		ss >> bg;
+		*/
 		ifs >> bg;
-		cout << bg << endl;
 		return true;
 	} else {
 		return false;
 	}
-	//ifs.read((char*)&bg, sizeof(bg));
 } 
 
 // ----------------------------------------------------------------------------
@@ -195,9 +199,10 @@ int main() {
 	if (resume) {
 		bool loaded = load<N>(bg);
 		if (loaded) {
-			cout << "Game loaded successfully" << endl;
-			cout << endl;
+			cout << "Game loaded successfully\n" << endl;
 		} else {
+			cout << "There is nothing to load" << endl;
+			cout << "Will set up a new game\n" << endl;
 			setup<N>(bg);
 		}
 	} else {
@@ -210,22 +215,20 @@ int main() {
 	bool isWinner = false;
 
 	while (!isWinner){
+		// Check if player wants to pause 
+		cout << "Would you like to pause the game? 1 (YES), 0 (NO)" << endl;
+		bool pause = false;	cin >> pause;
+		// Empty cin buffer
+		getline(cin, line);
+		// Save
+		if (pause) {
+			save<N>(bg);
+			return 0;
+		}
+
 		// Iterate over players
 		for (auto pName : playerNames) {
 			do {
-				// Check if player wants to pause 
-				cout << "Would you like to pause the game? 1 (YES), 0 (NO)" << endl;
-				bool pause = false;	cin >> pause;
-				// Empty cin buffer
-				getline(cin, line);
-
-				// Save
-				if (pause) {
-					save<N>(bg);
-					return 0;
-				}
-
-				// Take the turn
 				cout << endl; 
 				cout << "====================================" << endl;
 				cout << bg << endl;

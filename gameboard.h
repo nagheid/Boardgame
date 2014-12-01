@@ -9,6 +9,7 @@
 #include <ostream>
 #include <unordered_map>
 #include <vector>
+#include <fstream>
 
 using std::map;
 using std::string;
@@ -37,9 +38,6 @@ struct PlayerHashFunction {
 
 template <class T, class J, const int R, const int C>
 class GameBoard {
-	// Vector of players
-	vector<J> d_players;
-
 	// 2D vector of tiles
 	vector<vector<T*>> d_tiles;
 
@@ -66,8 +64,7 @@ public:
 	};
 
 	GameBoard();
-	GameBoard(vector<J> _players) : d_players(_players) {};
-	GameBoard(vector<string> _playerNames);
+	//GameBoard(vector<string> _playerNames);
 
 	void add(const T& tile, int row, int col);
 
@@ -117,32 +114,6 @@ GameBoard<T, J, R, C>::GameBoard() {
 }
 
 template <class T, class J, const int R, const int C>
-GameBoard<T, J, R, C>::GameBoard(vector<string> _playerNames) {
-	// Initialize players
-	for (auto name : _playerNames) {
-		J player = J(name);
-		d_players.push_back(player);
-#ifdef PKEY
-#ifdef PKEY_VEC
-		d_board[player] = vector<int>(2);
-#else
-		d_board[player] = new T();
-#endif
-#endif
-	}
-
-	// Initialize empty tile vector
-	for (int i = 0; i < R; i++)	{
-		for (int j = 0; j < C; j++)	{
-#ifdef PKEY
-			d_tiles.push_back(vector <T*>());
-			d_tiles[i].push_back(new T());
-#endif
-		}
-	}
-}
-
-template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::add(const T& tile, int row, int col){
 	// The value in d_tiles is a pointer to the tile
 	d_tiles[row][col] = (T*) &tile;
@@ -152,35 +123,20 @@ void GameBoard<T, J, R, C>::add(const T& tile, int row, int col){
 }
 
 template <class T, class J, const int R, const int C>
-void GameBoard<T, J, R, C>::setPlayers() {
-	auto baseTile = d_tiles[0][0];
-
-	for (auto it = d_board.begin(); it != d_board.end(); ++it) {
-		J player = it->first;
-#ifdef PKEY_VEC
-		d_board.insert(std::make_pair(player, vector<int>{0, 0}));
-#else
-		d_board.insert(std::make_pair(player, baseTile));
-#endif
-	}
-}
-
-template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::setPlayers(vector<string> playerNames) {
+	auto baseTile = d_tiles[0][0];
+	
 	// Initialize players
 	for (auto name : playerNames) {
 		J player = J(name);
-		d_players.push_back(player);
 #ifdef PKEY
 #ifdef PKEY_VEC
-		d_board[player] = vector<int>(2);
+		d_board[player] = vector<int>{0, 0};
 #else
-		d_board[player] = new T();
+		d_board[player] = baseTile;
 #endif
 #endif
 	}
-
-	setPlayers();
 }
 template <class T, class J, const int R, const int C>
 const T& GameBoard<T, J, R, C>::getTile(int row, int col) const{
@@ -397,8 +353,8 @@ inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) 
 		T tile = *(player_iter->second);
 #endif
 		os << player;
-		os << "Is on tile: ";
-		os << tile << "\t(" << tilePtr << ")" << endl;
+		os << "Is on tile:" << endl;
+		os << tile; /* << "\t(" << tilePtr << ")" */
 	}
 	return os;
 }
@@ -406,6 +362,27 @@ inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) 
 template <class T, class J, const int R, const int C>
 inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 	// TODO
+	//cout << "Read from txt:" << endl;
+	//std::filebuf* pbuf = is.rdbuf();
+	///*
+	string line;
+	while (getline(is, line)) {
+		// 3 lines per player;
+		cout << line << endl;
+		getline(is, line);
+		cout << line << endl;
+		getline(is, line);
+		cout << line << endl;
+		cout << "XXX" << endl;
+	}
+	//*/
+
+	for (auto t1 : gameboard.d_tiles) {
+		for (auto t2 : t1) {
+			is >> *t2;
+		}
+	}
+	//is >> gameboard.d_board;
 	return is;
 }
 
