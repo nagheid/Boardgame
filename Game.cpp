@@ -47,6 +47,8 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 			vector<Player> otherPlayers = bg.getPlayers(t);
 
 			// Display tile action
+			cout << endl;
+			cout << t << "(" << &t << ")" << endl;
 			cout << t.getName() << endl;
 			cout << t.getDescription() << endl;
 			cout << endl;
@@ -54,7 +56,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 			// Check if action is valid
 			bool validAction = false;
 			bool makeAction = false;
-			if (!t.actionValid(p, otherPlayers.size() - 1)){
+			if (! t.actionValid(p, otherPlayers.size() - 1)){
 				cout << "Cannot act on tile." << endl;
 				cout << "Please press any key to continue" << endl;
 				string placeholder;
@@ -134,7 +136,7 @@ int main() {
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
 			Tile * tile = tf->next();
-			cout << *tile << "(" << &tile << ")" << endl;
+			//cout << *tile << "(" << &tile << ")" << endl;
 			bg.add(*tile, i, j);
 		}
 	}

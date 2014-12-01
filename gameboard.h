@@ -108,7 +108,7 @@ public:
 #endif
 			os << player;
 			os << "Is on tile: ";
-			os << tile << "(" << &tilePtr << ")" << endl;
+			os << tile << "\t(" << tilePtr /* << " - " << &tilePtr */ << ")" << endl;
 		}
 		return os;
 	};
@@ -150,10 +150,10 @@ GameBoard<T, J, R, C>::GameBoard(vector<string> _playerNames) {
 
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::add(const T& tile, int row, int col){
-#ifdef PKEY
 	// The value in d_tiles is the address of the tile
 	*d_tiles[row][col] = tile;
-#endif
+	T * tilePtr = d_tiles[row][col];
+	cout << tile << "\t(" << tilePtr /* << /* " - " << &tilePtr */ << ")" << endl;
 }
 
 template <class T, class J, const int R, const int C>
