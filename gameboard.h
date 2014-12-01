@@ -25,7 +25,7 @@ class GameBoard;
 template <class T, class J, const int R, const int C>
 inline ostream& operator<< (ostream&, const GameBoard<T,J,R,C> &);
 template <class T, class J, const int R, const int C>
-istream& operator>> (istream&, GameBoard<T, J, R, C> &);
+inline istream& operator>> (istream&, GameBoard<T, J, R, C> &);
 
 template<class J>
 struct PlayerHashFunction {
@@ -94,26 +94,11 @@ public:
 	/*
 	 * Overloading >> and << operators for save and load feature
 	 */
-	inline friend ostream& operator<<(ostream& os, const GameBoard& gameboard) {
-		// TODO
-		// Iterate over players
-		for (auto player_iter = gameboard.d_board.begin(); player_iter != gameboard.d_board.end(); ++player_iter) {
-			J player = player_iter->first;
-#ifdef PKEY_VEC
-			vector<int> vec = player_iter->second;
-			T tile = *(gameboard.d_tiles[vec[0]][vec[1]]);
-			T * tilePtr = gameboard.d_tiles[vec[0]][vec[1]];
-#else
-			T tile = *(player_iter->second);
-#endif
-			os << player;
-			os << "Is on tile: ";
-			os << tile << "\t(" << tilePtr /* << " - " << &tilePtr */ << ")" << endl;
-		}
-		return os;
-	};
-
-	friend istream& operator>>(istream& is, GameBoard& gameboard);
+	template <class T, class J, const int R, const int C>
+	friend ostream& operator<<(ostream& os, const GameBoard<T,J,R,C>& gameboard); 
+	
+	template <class T, class J, const int R, const int C>
+	friend istream& operator>>(istream& is, GameBoard<T,J,R,C>& gameboard);
 
 };
 
@@ -368,25 +353,25 @@ const T& GameBoard<T, J, R, C>::move(Move move, const string& playerName){
 
 template <class T, class J, const int R, const int C>
 inline ostream& operator<<(ostream& os, const GameBoard<T, J, R, C>& gameboard) {
-	// TODO
 	// Iterate over players
 	for (auto player_iter = gameboard.d_board.begin(); player_iter != gameboard.d_board.end(); ++player_iter) {
 		J player = player_iter->first;
 #ifdef PKEY_VEC
 		vector<int> vec = player_iter->second;
 		T tile = *(gameboard.d_tiles[vec[0]][vec[1]]);
+		T * tilePtr = gameboard.d_tiles[vec[0]][vec[1]];
 #else
 		T tile = *(player_iter->second);
 #endif
-		os << player << endl;
-		os << " is on tile: ";
-		os << tile;
+		os << player;
+		os << "Is on tile: ";
+		os << tile << "\t(" << tilePtr << ")" << endl;
 	}
 	return os;
 }
 
 template <class T, class J, const int R, const int C>
-istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
+inline istream& operator>>(istream& is, GameBoard<T, J, R, C>& gameboard) {
 	// TODO
 	return is;
 }

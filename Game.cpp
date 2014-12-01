@@ -1,3 +1,4 @@
+#include <fstream>
 #include <stdio.h>
 #include <string>
 #include <sstream>
@@ -11,6 +12,27 @@
 
 using std::cerr;
 
+// ----------------------------------------------------------------------------
+// save
+// ----------------------------------------------------------------------------
+template <const int N>
+bool save(GameBoard<Tile, Player, N, N> &bg) {
+	ofstream ofs("boardgame.ros", ios::binary);
+	ofs.write((GameBoard<Tile,Player,N,N> *)&bg, sizeof(gb));
+}
+
+// ----------------------------------------------------------------------------
+// load
+// ----------------------------------------------------------------------------
+template <const int N>
+bool load(GameBoard<Tile, Player, N, N> &bg) {
+	ofstream ifs("fifthgrade.ros", ios::binary);
+	ifs.read((GameBoard<Tile, Player, N, N> *)&bg, sizeof(gb));
+}
+
+// ----------------------------------------------------------------------------
+// takeTurn
+// ----------------------------------------------------------------------------
 template <const int N>
 bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 	try {
@@ -34,18 +56,19 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 		cout << "Player pick move: " << m << endl;
 
 		// Get current tile
-		Tile& t = (Tile&)bg.getTile(pName);
-		cout << "Player is on tile:\t" << t << endl;
+		Tile& old_tile = (Tile&)bg.getTile(pName);
+		cout << "Player is on tile:\t" << old_tile << endl;
 
 		// Check if move is valid
-		if (bg.moveValid(m, pName)) {
-			// Move player to tile
-			t = (Tile&)bg.move(m, pName);
-			cout << "Player moved to tile:\t" << t << endl;
-		} else {
+		if (!bg.moveValid(m, pName)) {
 			cerr << "Invalid move!" << endl;
 			return false;
 		}
+
+
+		// Move player to tile
+		Tile& t = (Tile&)bg.move(m, pName);
+		cout << "Player moved to tile:\t" << t << endl;
 
 		// If player has food items
 		if (p.canAct()) {
@@ -71,7 +94,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 				validAction = true;
 
 				// If player chooses action
-				cout << "Do action? 1 (True), 0 (false)" << endl;
+				cout << "Do action? 1 (YES), 0 (NO)" << endl;
 				
 				cin >> makeAction;
 			}
@@ -86,6 +109,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 						bg.setPlayer(op);
 					}
 					// Perform action
+					cout << endl;
 					t.action(p);
 					bg.setPlayer(p);
 				}
@@ -107,11 +131,13 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 	return false;
 }
 
+// ----------------------------------------------------------------------------
+// main
+// ----------------------------------------------------------------------------
 int main() {
 	// SETUP THE BOARD //
 
 	// Input the names of all players
-	// TODO can change the way we take in names; this is simple for now
 	vector<string> playerNames;
 	std::cout << "Name rules" << std::endl;
 	std::cout << "1. no spaces in a player name, use '_'" << std::endl;
@@ -160,6 +186,7 @@ int main() {
 				cout << endl;
 			}	// Keep playing if takeTurn returns false
 			while (! takeTurn<r>(bg, pName));
+
 			// If player won
 			if (bg.win(pName)){
 				cout << pName << " WINS!" << endl;
