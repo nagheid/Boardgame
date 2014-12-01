@@ -571,17 +571,17 @@ Tile* TileFactory::next(){
 		int i = rand() % (max + 1);
 
 		// Get references to the tiles to switch
-		Tile& chosenTile = *tiles[i];
-		Tile& maxTile = *tiles[max];
+		Tile* chosenTile = tiles[i];
+		Tile* maxTile = tiles[max];
 
 		// Switch tiles
-		tiles[i] = &maxTile;
-		tiles[max] = &chosenTile;
+		tiles[i] = maxTile;
+		tiles[max] = chosenTile;
 
 		// Decrement the size of remaining tiles
 		max--;
 
-		return &chosenTile;
+		return chosenTile;
 	}
 	return nullptr;
 }
