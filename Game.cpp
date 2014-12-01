@@ -71,7 +71,7 @@ bool takeTurn(GameBoard<Tile, Player, N, N> &bg, const std::string& pName) {
 				validAction = true;
 
 				// If player chooses action
-				cout << "Do action? 1 (True), 0 (false)" << endl;
+				cout << "Do action? 1 (YES), 0 (NO)" << endl;
 				
 				cin >> makeAction;
 			}
