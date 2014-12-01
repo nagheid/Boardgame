@@ -151,9 +151,13 @@ GameBoard<T, J, R, C>::GameBoard(vector<string> _playerNames) {
 template <class T, class J, const int R, const int C>
 void GameBoard<T, J, R, C>::add(const T& tile, int row, int col){
 	// The value in d_tiles is the address of the tile
+	/*
 	*d_tiles[row][col] = tile;
+	*/
+	d_tiles[row][col] = (T*) &tile;
 	T * tilePtr = d_tiles[row][col];
-	cout << tile << "\t(" << tilePtr /* << /* " - " << &tilePtr */ << ")" << endl;
+	cout << tile << "\t(" << tilePtr << ")" << endl;
+
 }
 
 template <class T, class J, const int R, const int C>
