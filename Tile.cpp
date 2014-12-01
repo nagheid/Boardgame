@@ -532,10 +532,8 @@ TileFactory* TileFactory::instance = 0;
 TileFactory::TileFactory(int _nTiles) : nTiles(_nTiles), max(_nTiles-1), tiles() {
 
 	int numberForEach = (nTiles / 14);
-	cout << "numberForEach=" << numberForEach << endl;
 
 	int desetTilesToInsert = nTiles - numberForEach*14;
-	cout << "desetTilesToInsert=" << desetTilesToInsert << endl;
 
 	for (int i = 0; i < numberForEach; i++){
 		tiles.push_back(new Tile());
